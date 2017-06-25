@@ -3,18 +3,16 @@
     <group
         android:id="@+id/menu_top"
         android:checkableBehavior="single">
+
         <item
-            android:id="@+id/nav_one"
+            android:id="@+id/nav_product_list"
             android:icon="@drawable/ic_drawer_arrow"
-            android:title="@string/text_one"/>
+            android:title="@string/text_product_list"/>
+
         <item
-            android:id="@+id/nav_two"
+            android:id="@+id/nav_about"
             android:icon="@drawable/ic_drawer_arrow"
-            android:title="@string/text_two"/>
-        <item
-            android:id="@+id/nav_three"
-            android:icon="@drawable/ic_drawer_arrow"
-            android:title="@string/text_three"/>
+            android:title="@string/text_about"/>
     </group>
 
 </menu>
