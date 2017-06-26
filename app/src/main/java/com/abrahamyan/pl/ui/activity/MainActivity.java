@@ -15,6 +15,7 @@ import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.ui.fragment.AboutFragment;
 import com.abrahamyan.pl.ui.fragment.ProductListFragment;
 import com.abrahamyan.pl.util.FragmentTransactionManager;
+import com.abrahamyan.pl.util.Logger;
 
 public class MainActivity extends  BaseActivity  implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -67,8 +68,15 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if(mNavigationView.getMenu().findItem(R.id.nav_product_list).isChecked() == false) {
+            Logger.d(LOG_TAG, "yes2 -------------------------------------");
+            for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++)
+                getSupportFragmentManager().popBackStack();
+            mNavigationView.getMenu().findItem(R.id.nav_product_list).setChecked(true);
         } else {
-            super.onBackPressed();
+            Logger.d(LOG_TAG, "yes3 --------------------------------------");
+            finish();
+            //super.onBackPressed();
         }
     }
 
