@@ -1,5 +1,6 @@
 package com.abrahamyan.pl.db.entity;
 
+import com.abrahamyan.pl.util.Constant;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,29 +9,29 @@ import com.google.gson.annotations.SerializedName;
 
 public class Product {
 
-    @SerializedName("product_id")
-    int id;
+    @SerializedName(Constant.Json.ID)
+    String id;
 
-    @SerializedName("name")
+    @SerializedName(Constant.Json.NAME)
     String name;
 
-    @SerializedName("price")
+    @SerializedName(Constant.Json.PRICE)
     int price;
 
-    @SerializedName("image")
+    @SerializedName(Constant.Json.IMAGE)
     String image;
 
     public Product() {
     }
 
-    public Product(int id, String name, int price, String image) {
+    public Product(String id, String name, int price, String image) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.image = image;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -46,8 +47,7 @@ public class Product {
         this.image = image;
     }
 
-    public int getId() {
-
+    public String getId() {
         return id;
     }
 

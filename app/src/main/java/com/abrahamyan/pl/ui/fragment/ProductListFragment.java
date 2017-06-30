@@ -65,8 +65,7 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
 
         PLIntentService.start(
                 getActivity(),
-                this.getClass().getSimpleName(),
-                "https://s3-eu-west-1.amazonaws.com/developer-application-test/cart/list",
+                Constant.API.URL,
                 HttpRequestManager.RequestType.PRODUCT_LIST
         );
         return view;

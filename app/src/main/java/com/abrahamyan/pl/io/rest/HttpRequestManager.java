@@ -1,74 +1,61 @@
 package com.abrahamyan.pl.io.rest;
 
-import android.content.Context;
-import android.os.Bundle;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-import com.abrahamyan.pl.io.rest.entity.HttpConnection;
-import com.abrahamyan.pl.io.rest.util.HttpResponseUtil;
+import static com.abrahamyan.pl.util.Constant.Util.UTF_8;
+
+/**
+ * Created by SEVAK on 29.06.2017.
+ */
 
 public class HttpRequestManager {
-    // ===========================================================
-    // Constants
-    // ===========================================================
-    private static final String LOG_TAG = HttpRequestManager.class.getSimpleName();
+
     public class RequestType {
         public static final int PRODUCT_LIST = 1;
+        public static final int PRODUCT_ITEM = 2;
     }
-    // ===========================================================
-    // Fields
-    // ===========================================================
-    // ===========================================================
-    // Constructors
-    // ===========================================================
-    // ===========================================================
-    // Getter & Setter
-    // ===========================================================
-    // ===========================================================
-    // Methods for/from SuperClass
-    // ===========================================================
-    // ===========================================================
-    // Listeners, methods for/from Interfaces
-    // ===========================================================
-    // ===========================================================
-    // Methods
-    // ===========================================================
-    /**
-     * @param url           - api url
-     * @param token         - pass authorization token if required, otherwise pass null
-     * @param postEntity    - post request json entity) if required, otherwise pass null
-     * @param requestMethod - post, put, delete, get or other
-     */
-    public static HttpConnection executeRequest(Context context, String requestMethod, String url,
-                                                String token, String postEntity) {
-        Bundle bundle = new Bundle();
-        bundle.putString(RestHttpClient.BundleData.JSON_ENTITY, postEntity);
-        bundle.putString(RestHttpClient.BundleData.TOKEN, token);
-        HttpConnection httpConnection = null;
-        switch (requestMethod) {
-//            case RestHttpClient.RequestMethod.POST:
-//                httpConnection = RestHttpClient.executePostRequest(context, url, bundle);
-//                break;
 
-            case RestHttpClient.RequestMethod.GET:
-                httpConnection = RestHttpClient.executeGetRequest(context, url, bundle);
-                break;
+    public class RequestMethod {
+        public static final String POST = "POST";
+        public static final String GET = "GET";
+        public static final String PUT = "PUT";
+    }
 
-//            case RestHttpClient.RequestMethod.PATCH:
-//                httpConnection = RestHttpClient.executePatchRequest(context, url, bundle);
-//                break;
+    public static HttpURLConnection executeRequest(String apiUrl, String requestMethod, String data) {
 
-//            case RestHttpClient.RequestMethod.PUT:
-//                httpConnection = RestHttpClient.executePutRequest(context, url, bundle);
-//                break;
+        HttpURLConnection connection = null;
 
-//            case RestHttpClient.RequestMethod.DELETE:
-//                httpConnection = RestHttpClient.executeDeleteRequest(context, url, bundle);
-//                break;
+        try {
+            URL ulr = new URL(apiUrl);
+            connection = (HttpURLConnection) ulr.openConnection();
+            connection.setRequestMethod(requestMethod);
+            connection.setUseCaches(false);
+
+            switch (requestMethod) {
+                case RequestMethod.GET:
+                    connection.connect();
+                    break;
+
+                case RequestMethod.PUT:
+                case RequestMethod.POST:
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+                    connection.connect();
+                    OutputStream outputStream = connection.getOutputStream();
+                    outputStream.write(data != null ? data.getBytes(UTF_8) : new byte[]{0});
+                    outputStream.flush();
+                    outputStream.close();
+                    break;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        httpConnection = HttpResponseUtil.handleConnection(httpConnection);
-        return httpConnection;
+
+        return connection;
     }
-    // ===========================================================
-    // Inner and Anonymous Classes
-    // ===========================================================
 }

@@ -8,20 +8,20 @@ public class BaseFragment extends Fragment {
 
     // ===========================================================
     // Constants
-
     // ===========================================================
+
     // ===========================================================
     // Fields
-
     // ===========================================================
+
     // ===========================================================
     // Constructors
-
     // ===========================================================
+
     // ===========================================================
     // Getter & Setter
-
     // ===========================================================
+
     // ===========================================================
     // Methods for/from SuperClass
     // ===========================================================
@@ -42,13 +42,14 @@ public class BaseFragment extends Fragment {
         ((BaseActivity) getActivity()).showActionBarIcon();
     }
 
-    protected void setActionBarIcon() {
-        ((BaseActivity) getActivity()).hideActionBarIcon();
+    protected void setActionBarIcon(int iconRes) {
+        ((BaseActivity) getActivity()).setActionBarIcon(iconRes);
     }
 
     protected void setActionBarTitle(String actionBarTitle) {
         ((BaseActivity) getActivity()).setActionBarTitle(actionBarTitle);
     }
+
     // ===========================================================
     // Inner and Anonymous Classes
     // ===========================================================
