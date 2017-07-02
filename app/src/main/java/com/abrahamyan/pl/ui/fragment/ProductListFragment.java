@@ -1,5 +1,9 @@
 package com.abrahamyan.pl.ui.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +16,7 @@ import android.widget.Toast;
 
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.db.entity.Product;
-import com.abrahamyan.pl.io.bus.BusProvider;
+import com.abrahamyan.pl.db.entity.ProductResponse;
 import com.abrahamyan.pl.io.rest.HttpRequestManager;
 import com.abrahamyan.pl.io.service.PLIntentService;
 import com.abrahamyan.pl.ui.Adapter.ProductAdapter;
@@ -28,6 +32,8 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
     // ===========================================================
 
     private static final String LOG_TAG = ProductListFragment.class.getSimpleName();
+    public static final String BROADCAST_ACTION  = "com.abrahamyan.pl.ui.fragment.BroadcastReceiver";
+    public static final String NAME  = "com.abrahamyan.pl.ui.fragment.BroadcastName";
 
     // ===========================================================
     // Fields
@@ -35,6 +41,7 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
 
     private Bundle mArgumentData;
     private RecyclerView recyclerView;
+    private BroadcastReceiver br;
 
     // ===========================================================
     // Constructors
@@ -70,7 +77,19 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_list, container, false);
         findViews(view);
-        BusProvider.register(this);
+//        BusProvider.register(this);
+        br = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                ProductResponse productResponse = (ProductResponse) intent.getSerializableExtra(NAME);
+                Log.d(LOG_TAG, String.valueOf(productResponse.getProducts().size()));
+                setAdapter(productResponse.getProducts());
+            }
+        };
+
+        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
+        getActivity().registerReceiver(br, intFilt);
+//
         setListeners();
         getData();
         customizeActionBar();
@@ -92,7 +111,8 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        BusProvider.unregister(this);
+ //       BusProvider.unregister(this);
+        getActivity().unregisterReceiver(br);
     }
 
     // ===========================================================

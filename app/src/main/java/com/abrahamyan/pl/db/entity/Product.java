@@ -3,11 +3,13 @@ package com.abrahamyan.pl.db.entity;
 import com.abrahamyan.pl.util.Constant;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by SEVAK on 25.06.2017.
  */
 
-public class Product {
+public class Product implements Serializable{
 
     @SerializedName(Constant.Json.ID)
     String id;

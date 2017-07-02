@@ -3,13 +3,14 @@ package com.abrahamyan.pl.db.entity;
 import com.abrahamyan.pl.util.Constant;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by SEVAK on 29.06.2017.
  */
 
-public class ProductResponse {
+public class ProductResponse implements Serializable {
 
     @SerializedName(Constant.Json.PRODUCTS)
     private ArrayList<Product> products;
