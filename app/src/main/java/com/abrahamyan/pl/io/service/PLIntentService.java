@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.abrahamyan.pl.db.entity.Product;
 import com.abrahamyan.pl.db.entity.ProductResponse;
+import com.abrahamyan.pl.io.bus.BusProvider;
 import com.abrahamyan.pl.io.rest.HttpRequestManager;
 import com.abrahamyan.pl.io.rest.HttpResponseUtil;
 import com.abrahamyan.pl.util.Constant;
@@ -85,23 +86,23 @@ public class PLIntentService extends IntentService {
         String data = intent.getExtras().getString(Extra.POST_ENTITY);
         int requestType = intent.getExtras().getInt(Extra.REQUEST_TYPE);
         Log.i(LOG_TAG, requestType + Constant.Symbol.SPACE + url);
-
+        HttpURLConnection connection;
 
         switch (requestType) {
             case HttpRequestManager.RequestType.PRODUCT_LIST:
-                HttpURLConnection connection = HttpRequestManager.executeRequest(
+                connection = HttpRequestManager.executeRequest(
                         url,
                         HttpRequestManager.RequestMethod.GET,
                         data
                 );
 
-                String json = HttpResponseUtil.parseResponse(connection);
+                String jsonList = HttpResponseUtil.parseResponse(connection);
 
-                if(json != null) {
-                    Log.d(LOG_TAG, json);
-                    ProductResponse productResponse = (new Gson()).fromJson(json, ProductResponse.class);
+                if(jsonList != null) {
+                    Log.d(LOG_TAG, jsonList);
+                    ProductResponse productResponse = (new Gson()).fromJson(jsonList, ProductResponse.class);
                     ArrayList<Product> products = productResponse.getProducts();
-                    Log.d(LOG_TAG, "Products amount " + products.size());
+                    BusProvider.getInstance().post(products);
 
                 } else {
 
@@ -109,9 +110,28 @@ public class PLIntentService extends IntentService {
                 break;
 
             case HttpRequestManager.RequestType.PRODUCT_ITEM:
+                connection = HttpRequestManager.executeRequest(
+                        url,
+                        HttpRequestManager.RequestMethod.GET,
+                        data
+                );
+
+                String jsonItem = HttpResponseUtil.parseResponse(connection);
+
+                if(jsonItem != null) {
+                    Log.d(LOG_TAG, jsonItem);
+                    Product product = (new Gson()).fromJson(jsonItem, Product.class);
+                    BusProvider.getInstance().post(product);
+
+                } else {
+
+                }
                 break;
         }
 
+    }
+
+    private void sendNotification(String status, String message) {
     }
 
     // ===========================================================

@@ -78,7 +78,8 @@ public class Constant {
     }
 
     public class API {
-        public static final String URL = "https://s3-eu-west-1.amazonaws.com/developer-application-test/cart/list";
+        public static final String PRODUCT_LIST = "https://s3-eu-west-1.amazonaws.com/developer-application-test/cart/list";
+        public static final String PRODUCT_ITEM = "https://s3-eu-west-1.amazonaws.com/developer-application-test/cart/list";
     }
 
     public class Json {
@@ -87,5 +88,6 @@ public class Constant {
         public static final String NAME = "name";
         public static final String PRICE = "price";
         public static final String IMAGE = "image";
+        public static final String DESCRIPTION = "description";
     }
 }
