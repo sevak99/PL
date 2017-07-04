@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -68,9 +69,19 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else if(mNavigationView.getMenu().findItem(R.id.nav_product_list).isChecked() == false) {
-            for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++)
+            Log.d(LOG_TAG, String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
+            for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
+                Log.d(LOG_TAG, String.valueOf(getSupportFragmentManager().getBackStackEntryCount()) + "i = " + i);
+            }
+            Log.d(LOG_TAG, String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
+
             mNavigationView.getMenu().findItem(R.id.nav_product_list).setChecked(true);
+            openScreen(
+                    ProductListFragment.newInstance(),
+                    R.id.nav_product_list,
+                    false
+            );
         } else {
             finish();
             //super.onBackPressed();

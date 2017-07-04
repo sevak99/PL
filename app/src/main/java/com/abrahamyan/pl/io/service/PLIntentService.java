@@ -10,11 +10,11 @@ import com.abrahamyan.pl.db.entity.ProductResponse;
 import com.abrahamyan.pl.io.bus.BusProvider;
 import com.abrahamyan.pl.io.rest.HttpRequestManager;
 import com.abrahamyan.pl.io.rest.HttpResponseUtil;
-import com.abrahamyan.pl.ui.fragment.ProductListFragment;
 import com.abrahamyan.pl.util.Constant;
 import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 
 public class PLIntentService extends IntentService {
 
@@ -101,13 +101,10 @@ public class PLIntentService extends IntentService {
                 if(jsonList != null) {
                     Log.d(LOG_TAG, jsonList);
                     ProductResponse productResponse = (new Gson()).fromJson(jsonList, ProductResponse.class);
-//                    ArrayList<Product> products = productResponse.getProducts();
-//                    BusProvider.getInstance().post(products);
-                    Intent intent1 = new Intent(ProductListFragment.BROADCAST_ACTION);
-                    intent1.putExtra(ProductListFragment.NAME, productResponse);
-                    sendBroadcast(intent1);
-                } else {
-
+                    ArrayList<Product> products = productResponse.getProducts();
+                    BusProvider.getInstance().post(products);
+                }  else {
+                    BusProvider.getInstance().post(Constant.NetworkState.NO_INTERNET);
                 }
                 break;
 
@@ -126,19 +123,19 @@ public class PLIntentService extends IntentService {
                     BusProvider.getInstance().post(product);
 
                 } else {
-
+                    BusProvider.getInstance().post(null);
                 }
                 break;
         }
 
     }
 
-    private void sendNotification(String status, String message) {
-    }
-
     // ===========================================================
     // Methods
     // ===========================================================
+
+    private void sendNotification(String status, String message) {
+    }
 
     // ===========================================================
     // Util

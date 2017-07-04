@@ -90,4 +90,8 @@ public class Constant {
         public static final String IMAGE = "image";
         public static final String DESCRIPTION = "description";
     }
+
+    public class NetworkState {
+        public static final String NO_INTERNET = "No internet connection";
+    }
 }

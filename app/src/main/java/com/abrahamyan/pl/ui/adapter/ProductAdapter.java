@@ -1,4 +1,4 @@
-package com.abrahamyan.pl.ui.Adapter;
+package com.abrahamyan.pl.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -15,10 +15,6 @@ import com.abrahamyan.pl.db.entity.Product;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-
-/**
- * Created by SEVAK on 01.07.2017.
- */
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
@@ -57,6 +53,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public int getItemCount() {
         return products.size();
     }
+
+    // ===========================================================
+    // Methods for/from SuperClass
+    // ===========================================================
+
+    public void setProducts(ArrayList<Product> products) {
+        this.products.addAll(0, products);
+        //notifyDataSetChanged();
+    }
+
+    public void clear() {
+        products.clear();
+        notifyDataSetChanged();
+    }
+
 
     // ===========================================================
     // Inner and Anonymous Classes
@@ -123,7 +134,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             Glide.with(context)
                     .load(product.getImage())
                     .placeholder(R.drawable.ic_get_app_black_24dp)
-                    .error(R.drawable.ic_sentiment_very_dissatisfied_black_24dp)
                     .into(logo);
         }
 
