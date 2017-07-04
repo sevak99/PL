@@ -81,9 +81,9 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
         br = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                ProductResponse productResponse = (ProductResponse) intent.getSerializableExtra(NAME);
+                ProductResponse productResponse = (ProductResponse) intent.getParcelableExtra(NAME);
                 Log.d(LOG_TAG, String.valueOf(productResponse.getProducts().size()));
-                setAdapter(productResponse.getProducts());
+                setAdapter((ArrayList<Product>) productResponse.getProducts());
             }
         };
 
