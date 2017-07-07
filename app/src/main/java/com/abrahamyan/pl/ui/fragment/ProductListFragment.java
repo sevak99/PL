@@ -110,13 +110,10 @@ public class ProductListFragment extends BaseFragment
     @Subscribe
     public void onEventReceived(ArrayList<Product> productArrayList) {
         Log.d(LOG_TAG, "Size " + productArrayList.size());
-        noInternet.setVisibility(View.GONE);
         if (adapter == null) {
-            Log.d(LOG_TAG, "No Adapter---------");
             setAdapter(productArrayList);
         }
         else {
-            Log.d(LOG_TAG, "Have Adapter---------");
             adapter.setProducts(productArrayList);
         }
         refreshLayout.setRefreshing(false);
@@ -132,6 +129,7 @@ public class ProductListFragment extends BaseFragment
 
     @Override
     public void onRefresh() {
+        noInternet.setVisibility(View.GONE);
         refreshLayout.setRefreshing(true);
         PLIntentService.start(
                 getActivity(),
