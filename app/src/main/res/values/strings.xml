@@ -15,5 +15,10 @@
     <!--Navigation drawer menu items-->
     <string name="text_product_list">Product List</string>
     <string name="text_about">About</string>
+    <!--Toolbar menu item-->
+    <string name="text_add_product">Add product</string>
+    <!--New Product-->
+    <string name="msg_no_title">Title can not be empty</string>
+    <string name="msg_no_price">Price can not be empty</string>
 
 </resources>

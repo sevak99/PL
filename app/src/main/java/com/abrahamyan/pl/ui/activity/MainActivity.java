@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -69,12 +69,9 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else if(mNavigationView.getMenu().findItem(R.id.nav_product_list).isChecked() == false) {
-            Log.d(LOG_TAG, String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
             for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
-                Log.d(LOG_TAG, String.valueOf(getSupportFragmentManager().getBackStackEntryCount()) + "i = " + i);
             }
-            Log.d(LOG_TAG, String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
 
             mNavigationView.getMenu().findItem(R.id.nav_product_list).setChecked(true);
             openScreen(
@@ -84,7 +81,6 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
             );
         } else {
             finish();
-            //super.onBackPressed();
         }
     }
 
@@ -99,6 +95,12 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
     // ===========================================================
     // Other Listeners, methods for/from Interfaces
     // ===========================================================
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

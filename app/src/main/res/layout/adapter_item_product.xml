@@ -12,7 +12,8 @@
     <ImageView
         android:id="@+id/iv_product_item_logo"
         android:layout_width="100dp"
-        android:layout_height="100dp" />
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:layout_width="match_parent"

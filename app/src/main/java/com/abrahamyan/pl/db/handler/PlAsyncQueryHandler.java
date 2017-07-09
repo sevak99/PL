@@ -1,7 +1,7 @@
 package com.abrahamyan.pl.db.handler;
 
 import android.content.AsyncQueryHandler;
-import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -52,9 +52,9 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
     // Constructors
     // ===========================================================
 
-    public PlAsyncQueryHandler(ContentResolver contentResolver,
+    public PlAsyncQueryHandler(Context context,
                                AsyncQueryListener queryListenerReference) {
-        super(contentResolver);
+        super(context.getContentResolver());
         mQueryListenerReference = new WeakReference<>(queryListenerReference);
     }
 

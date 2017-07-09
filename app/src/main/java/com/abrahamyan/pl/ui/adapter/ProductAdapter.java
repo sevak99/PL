@@ -2,7 +2,6 @@ package com.abrahamyan.pl.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,142 +12,140 @@ import android.widget.TextView;
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.db.entity.Product;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
     // ===========================================================
+    // Constants
+    // ===========================================================
+
+    private static final String LOG_TAG = ProductAdapter.class.getSimpleName();
+
+    // ===========================================================
     // Fields
     // ===========================================================
 
-    private ProductViewHolder.OnItemClickListener onItemClickListener;
-    private ArrayList<Product> products;
+    private ArrayList<Product> mProductArrayList;
+    private OnItemClickListener mOnItemClickListener;
 
     // ===========================================================
     // Constructors
     // ===========================================================
 
-    public ProductAdapter(ProductViewHolder.OnItemClickListener onItemClickListener, ArrayList<Product> products) {
-        this.onItemClickListener = onItemClickListener;
-        this.products = products;
+    public ProductAdapter(ArrayList<Product> productArrayList, OnItemClickListener onItemClickListener) {
+        mProductArrayList = productArrayList;
+        mOnItemClickListener = onItemClickListener;
     }
+
+    // ===========================================================
+    // Getter & Setter
+    // ===========================================================
 
     // ===========================================================
     // Methods for/from SuperClass
     // ===========================================================
 
     @Override
-    public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_item_product, parent, false);
-        return new ProductViewHolder(view, onItemClickListener);
+    public ProductViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.adapter_item_product, viewGroup, false);
+        return new ProductViewHolder(view, mProductArrayList, mOnItemClickListener);
     }
 
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
-        holder.bind(products.get(position));
+        holder.bindData(mProductArrayList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return mProductArrayList.size();
     }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
 
     // ===========================================================
-    // Methods for/from SuperClass
+    // Other Listeners, methods for/from Interfaces
     // ===========================================================
 
-    public void setProducts(ArrayList<Product> products) {
-        this.products = products;
-        notifyDataSetChanged();
-    }
+    // ===========================================================
+    // Click Listeners
+    // ===========================================================
 
-    public void clear() {
-        products.clear();
-        notifyDataSetChanged();
-    }
-
+    // ===========================================================
+    // Methods
+    // ===========================================================
 
     // ===========================================================
     // Inner and Anonymous Classes
     // ===========================================================
 
-    public static class ProductViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener{
+    static class ProductViewHolder extends RecyclerView.ViewHolder {
 
-        // ===========================================================
-        // Fields
-        // ===========================================================
+        Context context;
+        TextView tvProductTitle;
+        TextView tvProductPrice;
+        ImageView ivProductImage;
+        LinearLayout llItemContainer;
+        OnItemClickListener onItemClickListener;
+        ArrayList<Product> productArrayList;
 
-        private Context context;
-        private OnItemClickListener onItemClickListener;
-        private LinearLayout container;
-        private ImageView logo;
-        private TextView title;
-        private TextView price;
-        private Product product;
-
-        // ===========================================================
-        // Constructors
-        // ===========================================================
-
-        public ProductViewHolder(View itemView, OnItemClickListener onItemClickListener) {
+        ProductViewHolder(View itemView, ArrayList<Product> productArrayList, OnItemClickListener onItemClickListener) {
             super(itemView);
-            findViews(itemView);
+            this.context = itemView.getContext();
+            this.productArrayList = productArrayList;
             this.onItemClickListener = onItemClickListener;
+            findViews(itemView);
         }
 
-        // ===========================================================
-        // Click Listeners
-        // ===========================================================
-
-        @Override
-        public void onClick(View v) {
-            Log.d("testt", String.valueOf(v.getId()));
-            switch (v.getId()) {
-                case R.id.ll_product_item_container:
-                    nonotifyItemClicked();
-                    break;
-            }
+        void findViews(View view) {
+            llItemContainer = (LinearLayout) view.findViewById(R.id.ll_product_item_container);
+            tvProductTitle = (TextView) view.findViewById(R.id.tv_product_item_title);
+            tvProductPrice = (TextView) view.findViewById(R.id.tv_product_item_price);
+            ivProductImage = (ImageView) view.findViewById(R.id.iv_product_item_logo);
         }
 
-        // ===========================================================
-        // Methods
-        // ===========================================================
+        void bindData(final Product product) {
 
-        private void findViews(View view) {
-            container = (LinearLayout) view.findViewById(R.id.ll_product_item_container);
-            logo = (ImageView) view.findViewById( R.id.iv_product_item_logo );
-            title = (TextView) view.findViewById( R.id.tv_product_item_title );
-            price = (TextView) view.findViewById( R.id.tv_product_item_price );
-            context = container.getContext();
-
-            container.setOnClickListener(this);
-        }
-
-
-        public void bind(Product product) {
-            this.product = product;
-            title.setText(product.getName());
-            price.setText(String.valueOf(product.getPrice()));
-            Glide.with(context)
+            Glide.with(itemView.getContext())
                     .load(product.getImage())
                     .placeholder(R.drawable.ic_get_app_black_24dp)
-                    .into(logo);
-        }
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(ivProductImage);
 
-        public void nonotifyItemClicked() {
-            if(onItemClickListener != null) {
-                onItemClickListener.onItemClick(product);
-            }
-        }
+            tvProductTitle.setText(product.getName());
 
-        // ===========================================================
-        // Inner and Anonymous Classes
-        // ===========================================================
+            tvProductPrice.setText(String.valueOf(product.getPrice()));
 
-        public interface OnItemClickListener {
-            void onItemClick(Product product);
+            llItemContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(product);
+                }
+            });
+
+            llItemContainer.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onItemClickListener.onItemLongClick(product);
+                    return true;
+                }
+            });
         }
+    }
+
+    public interface OnItemClickListener {
+
+        void onItemClick(Product product);
+
+        void onItemLongClick(Product product);
+
     }
 }

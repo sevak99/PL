@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 
 import com.abrahamyan.pl.ui.activity.BaseActivity;
 
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
     // ===========================================================
     // Constants

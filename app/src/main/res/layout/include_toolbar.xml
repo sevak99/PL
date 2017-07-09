@@ -10,11 +10,13 @@
     android:focusableInTouchMode="true"
     app:theme="@style/Toolbar">
 
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv_toolbar_title"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
@@ -23,7 +25,9 @@
             android:layout_gravity="center"
             android:maxLines="1"
             android:minLines="1"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white" />
+
+
         <TextView
             android:id="@+id/tv_toolbar_subtitle"
             android:layout_width="wrap_content"
@@ -33,6 +37,9 @@
             android:minLines="1"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/white"
-            android:visibility="gone"/>
+            android:visibility="gone" />
+
     </LinearLayout>
+
+
 </android.support.v7.widget.Toolbar>

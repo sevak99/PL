@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.abrahamyan.pl">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -12,14 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
             android:name=".db.provider.PlProvider"
             android:authorities="${applicationId}"
-            android:exported="false"/>
+            android:exported="false" />
 
-
-        <activity android:name=".ui.activity.MainActivity">
+        <activity android:name=".ui.activity.MainActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,11 +26,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.activity.AddProductActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
         <service
             android:name=".io.service.PLIntentService"
-            android:exported="false"/>
+            android:exported="false" />
+
     </application>
-
-
 
 </manifest>

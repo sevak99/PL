@@ -3,8 +3,6 @@ package com.abrahamyan.pl.io.service;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.abrahamyan.pl.db.entity.Product;
@@ -14,6 +12,7 @@ import com.abrahamyan.pl.io.bus.BusProvider;
 import com.abrahamyan.pl.io.rest.HttpRequestManager;
 import com.abrahamyan.pl.io.rest.HttpResponseUtil;
 import com.abrahamyan.pl.util.Constant;
+import com.abrahamyan.pl.util.NetworkUtil;
 import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
@@ -30,7 +29,6 @@ public class PLIntentService extends IntentService {
     private class Extra {
         static final String URL = "URL";
         static final String POST_ENTITY = "POST_ENTITY";
-        static final String SUBSCRIBER = "SUBSCRIBER";
         static final String REQUEST_TYPE = "REQUEST_TYPE";
     }
 
@@ -112,8 +110,8 @@ public class PLIntentService extends IntentService {
 
                     BusProvider.getInstance().post(products);
 
-                } else if(!isConnected(this)){
-                    BusProvider.getInstance().post(Constant.NetworkState.NO_INTERNET);
+                } else if(!NetworkUtil.getInstance().isConnected(this)){
+                    BusProvider.getInstance().post(Constant.ERROR_MSG.NO_INTERNET);
                 }
                 break;
 
@@ -131,8 +129,8 @@ public class PLIntentService extends IntentService {
                     Product product = (new Gson()).fromJson(jsonItem, Product.class);
                     BusProvider.getInstance().post(product);
 
-                } else if(!isConnected(this)){
-                    BusProvider.getInstance().post(Constant.NetworkState.NO_INTERNET);
+                } else if(!NetworkUtil.getInstance().isConnected(this)){
+                    BusProvider.getInstance().post(Constant.ERROR_MSG.NO_INTERNET);
                 }
                 break;
         }
@@ -144,12 +142,6 @@ public class PLIntentService extends IntentService {
     // ===========================================================
 
     private void sendNotification(String status, String message) {
-    }
-
-    public static boolean isConnected(Context context){
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = cm.getActiveNetworkInfo();
-        return (info != null && info.isConnected());
     }
 
     // ===========================================================
