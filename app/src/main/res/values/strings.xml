@@ -17,8 +17,16 @@
     <string name="text_about">About</string>
     <!--Toolbar menu item-->
     <string name="text_add_product">Add product</string>
-    <!--New Product-->
+    <!--Product-->
     <string name="msg_no_title">Title can not be empty</string>
     <string name="msg_no_price">Price can not be empty</string>
+    <string name="msg_delete_product">Are you sure to delete this item?</string>
+    <string name="msg_add_product">Are you sure to add this item?</string>
+    <!--dialog-->
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="ok">Ok</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

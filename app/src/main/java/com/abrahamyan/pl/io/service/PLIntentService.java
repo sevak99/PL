@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.db.entity.Product;
 import com.abrahamyan.pl.db.entity.ProductResponse;
 import com.abrahamyan.pl.db.handler.PlQueryHandler;
@@ -111,7 +112,7 @@ public class PLIntentService extends IntentService {
                     BusProvider.getInstance().post(products);
 
                 } else if(!NetworkUtil.getInstance().isConnected(this)){
-                    BusProvider.getInstance().post(Constant.ERROR_MSG.NO_INTERNET);
+                    BusProvider.getInstance().post(R.string.msg_connection_error);
                 }
                 break;
 
@@ -130,7 +131,7 @@ public class PLIntentService extends IntentService {
                     BusProvider.getInstance().post(product);
 
                 } else if(!NetworkUtil.getInstance().isConnected(this)){
-                    BusProvider.getInstance().post(Constant.ERROR_MSG.NO_INTERNET);
+                    BusProvider.getInstance().post(R.string.msg_connection_error);
                 }
                 break;
         }

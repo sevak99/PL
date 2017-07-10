@@ -1,11 +1,13 @@
 package com.abrahamyan.pl.ui.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.db.cursor.CursorReader;
@@ -54,7 +57,7 @@ public class ProductListFragment extends BaseFragment
     private RecyclerView mRecyclerView;
     private ProductAdapter mRecyclerViewAdapter;
     private SwipeRefreshLayout mRefreshLayout;
-    private TextView mConnectionMsg;
+    private TextView mErrorMsg;
     private ArrayList<Product> mProductArrayList;
 
     // ===========================================================
@@ -121,11 +124,24 @@ public class ProductListFragment extends BaseFragment
     @Override
     public void onItemClick(Product product) {
         Log.d(LOG_TAG, product.getName());
+        Toast.makeText(getActivity(), product.getId(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onItemLongClick(Product product) {
-        Log.d(LOG_TAG, product.getName());
+    public void onItemLongClick(final Product product) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setMessage(R.string.msg_delete_product)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPlAsyncQueryHandler.deleteProduct(product);
+                        mProductArrayList.remove(product);
+                        mRecyclerViewAdapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
@@ -145,13 +161,14 @@ public class ProductListFragment extends BaseFragment
     public void onEventReceived(String string) {
         mProductArrayList.clear();
         mRecyclerViewAdapter.notifyDataSetChanged();
-        mConnectionMsg.setVisibility(View.VISIBLE);
+        mErrorMsg.setText(string);
+        mErrorMsg.setVisibility(View.VISIBLE);
         mRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onRefresh() {
-        mConnectionMsg.setVisibility(View.GONE);
+        mErrorMsg.setVisibility(View.GONE);
         mRefreshLayout.setRefreshing(true);
         if(NetworkUtil.getInstance().isConnected(getActivity())) {
             PLIntentService.start(
@@ -196,6 +213,8 @@ public class ProductListFragment extends BaseFragment
                     mProductArrayList.addAll(products);
                     mRecyclerViewAdapter.notifyDataSetChanged();
                 } else {
+                    mErrorMsg.setText(R.string.msg_connection_error);
+                    mErrorMsg.setVisibility(View.VISIBLE);
                 }
                 break;
         }
@@ -227,7 +246,7 @@ public class ProductListFragment extends BaseFragment
     private void findViews(View view) {
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_product_list);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_product_list);
-        mConnectionMsg = (TextView) view.findViewById(R.id.tv_product_list);
+        mErrorMsg = (TextView) view.findViewById(R.id.tv_product_list);
     }
 
     private void init() {

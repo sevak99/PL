@@ -91,9 +91,9 @@ public class Constant {
         public static final String DESCRIPTION = "description";
     }
 
-    public class ERROR_MSG {
-        public static final String NO_INTERNET = "No internet connection";
-    }
+//    public class ERROR_MSG {
+//        public static final String NO_INTERNET = "No internet connection";
+//    }
 
     public class Image {
         public static final String DEFULT_IMAGE = "https://s3-eu-west-1.amazonaws.com/developer-application-test/images/3.jpg";

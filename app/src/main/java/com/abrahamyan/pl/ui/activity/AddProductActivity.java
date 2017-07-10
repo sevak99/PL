@@ -1,10 +1,12 @@
 package com.abrahamyan.pl.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -87,11 +89,22 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
             case R.id.btn_add_product_add:
                 parseProduct();
                 if (mProduct != null) {
-                    mPlAsyncQueryHandler.addProduct(mProduct);
-                    Intent intent = new Intent();
-                    intent.putExtra(KEY_TITLE, mProduct);
-                    setResult(RESULT_OK, intent);
-                    finish();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                            .setMessage(R.string.msg_add_product)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mPlAsyncQueryHandler.addProduct(mProduct);
+                                    Intent intent = new Intent();
+                                    intent.putExtra(KEY_TITLE, mProduct);
+                                    setResult(RESULT_OK, intent);
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
                 break;
         }
