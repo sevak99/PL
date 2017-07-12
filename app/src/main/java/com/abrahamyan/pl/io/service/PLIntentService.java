@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.db.entity.Product;
 import com.abrahamyan.pl.db.entity.ProductResponse;
 import com.abrahamyan.pl.db.handler.PlQueryHandler;
@@ -13,7 +12,6 @@ import com.abrahamyan.pl.io.bus.BusProvider;
 import com.abrahamyan.pl.io.rest.HttpRequestManager;
 import com.abrahamyan.pl.io.rest.HttpResponseUtil;
 import com.abrahamyan.pl.util.Constant;
-import com.abrahamyan.pl.util.NetworkUtil;
 import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
@@ -100,20 +98,16 @@ public class PLIntentService extends IntentService {
 
                 String jsonList = HttpResponseUtil.parseResponse(connection);
 
-                if(jsonList != null) {
-                    Log.d(LOG_TAG, jsonList);
-                    ProductResponse productResponse = (new Gson()).fromJson(jsonList, ProductResponse.class);
-                    ArrayList<Product> products = productResponse.getProducts();
+                Log.d(LOG_TAG, jsonList);
+                ProductResponse productResponse = (new Gson()).fromJson(jsonList, ProductResponse.class);
+                ArrayList<Product> products = productResponse.getProducts();
 
-                    PlQueryHandler.deleteProducts(this);
+                PlQueryHandler.deleteProducts(this);
 
-                    PlQueryHandler.addProducts(this, products);
+                PlQueryHandler.addProducts(this, products);
 
-                    BusProvider.getInstance().post(products);
+                BusProvider.getInstance().post(products);
 
-                } else if(!NetworkUtil.getInstance().isConnected(this)){
-                    BusProvider.getInstance().post(R.string.msg_connection_error);
-                }
                 break;
 
             case HttpRequestManager.RequestType.PRODUCT_ITEM:
@@ -125,14 +119,11 @@ public class PLIntentService extends IntentService {
 
                 String jsonItem = HttpResponseUtil.parseResponse(connection);
 
-                if(jsonItem != null) {
-                    Log.d(LOG_TAG, jsonItem);
-                    Product product = (new Gson()).fromJson(jsonItem, Product.class);
-                    BusProvider.getInstance().post(product);
 
-                } else if(!NetworkUtil.getInstance().isConnected(this)){
-                    BusProvider.getInstance().post(R.string.msg_connection_error);
-                }
+                Log.d(LOG_TAG, jsonItem);
+                Product product = (new Gson()).fromJson(jsonItem, Product.class);
+                BusProvider.getInstance().post(product);
+
                 break;
         }
 

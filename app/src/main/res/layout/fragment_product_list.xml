@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_red_light"
     android:clickable="true"
     android:animateLayoutChanges="true">
 
@@ -25,7 +24,7 @@
         android:layout_centerInParent="true"
         android:text="No Internet"
         android:textColor="@android:color/black"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:textAppearance="?android:textAppearanceLarge"
         android:visibility="gone"/>
 
 

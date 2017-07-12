@@ -26,14 +26,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+            android:textAppearance="?android:textAppearanceLarge"/>
 
         <TextView
             android:id="@+id/tv_product_item_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="?android:textAppearanceMedium"/>
 
     </LinearLayout>
 

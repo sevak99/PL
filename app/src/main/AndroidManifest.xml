@@ -30,6 +30,10 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
 
+        <activity android:name=".ui.activity.ProductActivity" >
+
+        </activity>
+
         <service
             android:name=".io.service.PLIntentService"
             android:exported="false" />

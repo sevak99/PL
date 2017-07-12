@@ -15,6 +15,7 @@ public class Constant {
 
     public class Extra {
         public static final String EXTRA_USER = "EXTRA_USER";
+        public static final String EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID";
     }
 
     public class Bundle {

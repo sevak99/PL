@@ -2,6 +2,7 @@ package com.abrahamyan.pl.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener 
     // ===========================================================
 
     private Bundle mArgumentData;
+    private FloatingActionButton mFabAddProduct;
 
     // ===========================================================
     // Constructors
@@ -70,6 +72,8 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.fab_main_add_product:
+                break;
         }
     }
 
@@ -82,11 +86,11 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener 
     // ===========================================================
 
     private void setListeners() {
-
+        mFabAddProduct.setOnClickListener(this);
     }
 
     private void findViews(View view) {
-
+        mFabAddProduct = (FloatingActionButton) getActivity().findViewById(R.id.fab_main_add_product);
     }
 
     public void getData() {

@@ -6,19 +6,17 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.db.cursor.CursorReader;
@@ -28,6 +26,7 @@ import com.abrahamyan.pl.io.bus.BusProvider;
 import com.abrahamyan.pl.io.rest.HttpRequestManager;
 import com.abrahamyan.pl.io.service.PLIntentService;
 import com.abrahamyan.pl.ui.activity.AddProductActivity;
+import com.abrahamyan.pl.ui.activity.ProductActivity;
 import com.abrahamyan.pl.ui.adapter.ProductAdapter;
 import com.abrahamyan.pl.util.Constant;
 import com.abrahamyan.pl.util.NetworkUtil;
@@ -39,14 +38,18 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProductListFragment extends BaseFragment
         implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener,
-        PlAsyncQueryHandler.AsyncQueryListener, ProductAdapter.OnItemClickListener{
+        PlAsyncQueryHandler.AsyncQueryListener, ProductAdapter.OnItemClickListener {
 
     // ===========================================================
     // Constants
     // ===========================================================
 
     private static final String LOG_TAG = ProductListFragment.class.getSimpleName();
-    private static final int REQUEST_CODE = 1;
+
+    public static class RequestCode {
+        public static final int ADD_PRODUCT_ACTIVITY = 1;
+        public static final int PRODUCT_ACTIVITY = 2;
+    }
 
     // ===========================================================
     // Fields
@@ -59,6 +62,7 @@ public class ProductListFragment extends BaseFragment
     private SwipeRefreshLayout mRefreshLayout;
     private TextView mErrorMsg;
     private ArrayList<Product> mProductArrayList;
+    private FloatingActionButton mFabAddProduct;
 
     // ===========================================================
     // Constructors
@@ -118,13 +122,18 @@ public class ProductListFragment extends BaseFragment
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.fab_main_add_product:
+                Intent intent = new Intent(getActivity(), AddProductActivity.class);
+                startActivityForResult(intent, RequestCode.ADD_PRODUCT_ACTIVITY);
+                break;
         }
     }
 
     @Override
     public void onItemClick(Product product) {
-        Log.d(LOG_TAG, product.getName());
-        Toast.makeText(getActivity(), product.getId(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), ProductActivity.class);
+        intent.putExtra(Constant.Extra.EXTRA_PRODUCT_ID, product.getId());
+        startActivityForResult(intent, RequestCode.PRODUCT_ACTIVITY);
     }
 
     @Override
@@ -157,20 +166,11 @@ public class ProductListFragment extends BaseFragment
         mRefreshLayout.setRefreshing(false);
     }
 
-    @Subscribe
-    public void onEventReceived(String string) {
-        mProductArrayList.clear();
-        mRecyclerViewAdapter.notifyDataSetChanged();
-        mErrorMsg.setText(string);
-        mErrorMsg.setVisibility(View.VISIBLE);
-        mRefreshLayout.setRefreshing(false);
-    }
-
     @Override
     public void onRefresh() {
         mErrorMsg.setVisibility(View.GONE);
         mRefreshLayout.setRefreshing(true);
-        if(NetworkUtil.getInstance().isConnected(getActivity())) {
+        if (NetworkUtil.getInstance().isConnected(getActivity())) {
             PLIntentService.start(
                     getActivity(),
                     Constant.API.PRODUCT_LIST,
@@ -182,23 +182,28 @@ public class ProductListFragment extends BaseFragment
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_product:
-                Intent intent = new Intent(getActivity(), AddProductActivity.class);
-                startActivityForResult(intent, REQUEST_CODE);
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.toolbar_add_product:
+//                Intent intent = new Intent(getActivity(), AddProductActivity.class);
+//                startActivityForResult(intent, RequestCode.ADD_PRODUCT_ACTIVITY);
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK) {
-            if(requestCode == REQUEST_CODE) {
-                Product product = data.getParcelableExtra(AddProductActivity.KEY_TITLE);
-                mProductArrayList.add(product);
-                mRecyclerViewAdapter.notifyDataSetChanged();
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RequestCode.ADD_PRODUCT_ACTIVITY:
+                    long id = Long.parseLong(data.getStringExtra(Constant.Extra.EXTRA_PRODUCT_ID));
+                    mPlAsyncQueryHandler.getProduct(id);
+                    break;
+
+                case RequestCode.PRODUCT_ACTIVITY:
+                    mPlAsyncQueryHandler.getProducts();
+                    break;
             }
         }
     }
@@ -208,13 +213,23 @@ public class ProductListFragment extends BaseFragment
         switch (token) {
             case PlAsyncQueryHandler.QueryToken.GET_PRODUCTS:
                 ArrayList<Product> products = CursorReader.parseProducts(cursor);
-                if(products != null) {
+                if (products != null && products.size() != 0) {
+                    mErrorMsg.setVisibility(View.GONE);
                     mProductArrayList.clear();
                     mProductArrayList.addAll(products);
                     mRecyclerViewAdapter.notifyDataSetChanged();
                 } else {
                     mErrorMsg.setText(R.string.msg_connection_error);
                     mErrorMsg.setVisibility(View.VISIBLE);
+                }
+                break;
+
+            case PlAsyncQueryHandler.QueryToken.GET_PRODUCT:
+                Product product = CursorReader.parseProduct(cursor);
+                if (product != null) {
+                    mErrorMsg.setVisibility(View.GONE);
+                    mProductArrayList.add(product);
+                    mRecyclerViewAdapter.notifyDataSetChanged();
                 }
                 break;
         }
@@ -241,12 +256,14 @@ public class ProductListFragment extends BaseFragment
 
     private void setListeners() {
         mRefreshLayout.setOnRefreshListener(this);
+        mFabAddProduct.setOnClickListener(this);
     }
 
     private void findViews(View view) {
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_product_list);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_product_list);
         mErrorMsg = (TextView) view.findViewById(R.id.tv_product_list);
+        mFabAddProduct = (FloatingActionButton) getActivity().findViewById(R.id.fab_main_add_product);
     }
 
     private void init() {

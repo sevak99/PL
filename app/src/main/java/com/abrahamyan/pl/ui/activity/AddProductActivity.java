@@ -29,7 +29,6 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     // ===========================================================
 
     private static final String LOG_TAG = AddProductActivity.class.getSimpleName();
-    public static final String KEY_TITLE = "com.abrahamyan.pl.ui.activity.AddProductActivity_Title";
 
     // ===========================================================
     // Fields
@@ -87,17 +86,18 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add_product_add:
-                parseProduct();
-                if (mProduct != null) {
+                createProduct();
 
+                if (mProduct != null) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this)
                             .setMessage(R.string.msg_add_product)
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     mPlAsyncQueryHandler.addProduct(mProduct);
+
                                     Intent intent = new Intent();
-                                    intent.putExtra(KEY_TITLE, mProduct);
+                                    intent.putExtra(Constant.Extra.EXTRA_PRODUCT_ID, mProduct.getId());
                                     setResult(RESULT_OK, intent);
                                     finish();
                                 }
@@ -150,7 +150,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     }
 
     private void customizeActionBar() {
-        setActionBarTitle("Add Product");
+        setActionBarTitle(getString(R.string.add_product_activity));
     }
 
     private void init() {
@@ -162,7 +162,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         mPlAsyncQueryHandler = new PlAsyncQueryHandler(getApplicationContext(), this);
     }
 
-    private void parseProduct() {
+    private void createProduct() {
         if(mEtProductTitle.getText().length() == 0) {
             Toast.makeText(this, R.string.msg_no_title, Toast.LENGTH_SHORT).show();
             return;
