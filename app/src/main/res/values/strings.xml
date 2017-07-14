@@ -10,14 +10,14 @@
     <string name="msg_connection_error">Connection error</string>
     <string name="msg_navigation_drawer_open">Open navigation drawer</string>
     <string name="msg_navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="msg_not_favorites">No favorite products</string>
     <!--Auth screen strings-->
     <string name="text_btn_auth_sign">Login</string>
     <!--Navigation drawer menu items-->
     <string name="text_product_list">Product List</string>
     <string name="text_about">About</string>
-    <!--Toolbar menu item-->
-    <string name="text_add_product">Add product</string>
-    <string name="text_edit_product">Edit product</string>
+    <string name="text_favorite_products">Favorite Products</string>
     <!--Product wrong data-->
     <string name="msg_no_title">Title can not be empty</string>
     <string name="msg_no_price">Price can not be empty</string>
@@ -29,7 +29,7 @@
     <string name="no">No</string>
     <string name="msg_delete_product">Are you sure to delete this item?</string>
     <string name="msg_add_product">Are you sure to add this item?</string>
-    <!--Activity -->
-    <string name="add_product_activity">Add Product</string>
-    <string name="product_activity">Product</string>
+    <!--Toolbar titles-->
+    <string name="text_add_product">Add Product</string>
+    <string name="text_product">Product</string>
 </resources>

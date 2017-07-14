@@ -15,7 +15,12 @@ public class Constant {
 
     public class Extra {
         public static final String EXTRA_USER = "EXTRA_USER";
-        public static final String EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID";
+        public static final String EXTRA_PRODUCT = "EXTRA_PRODUCT";
+    }
+
+    public static class RequestCode {
+        public static final int ADD_PRODUCT_ACTIVITY = 1;
+        public static final int PRODUCT_ACTIVITY = 2;
     }
 
     public class Bundle {
@@ -79,8 +84,10 @@ public class Constant {
     }
 
     public class API {
-        public static final String PRODUCT_LIST = "https://s3-eu-west-1.amazonaws.com/developer-application-test/cart/list";
-        public static final String PRODUCT_ITEM = "https://s3-eu-west-1.amazonaws.com/developer-application-test/cart/1/detail";
+        public static final String HOST = "https://tigransarkisian.github.io";
+        public static final String PRODUCT_LIST = HOST + "/aca_pl/products.json";
+        public static final String PRODUCT_ITEM = HOST + "/aca_pl/products/"; // id
+        public static final String PRODUCT_ITEM_POSTFIX = "/details.json";
     }
 
     public class Json {
@@ -91,10 +98,6 @@ public class Constant {
         public static final String IMAGE = "image";
         public static final String DESCRIPTION = "description";
     }
-
-//    public class ERROR_MSG {
-//        public static final String NO_INTERNET = "No internet connection";
-//    }
 
     public class Image {
         public static final String DEFULT_IMAGE = "https://s3-eu-west-1.amazonaws.com/developer-application-test/images/3.jpg";

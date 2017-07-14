@@ -102,8 +102,6 @@ public class PLIntentService extends IntentService {
                 ProductResponse productResponse = (new Gson()).fromJson(jsonList, ProductResponse.class);
                 ArrayList<Product> products = productResponse.getProducts();
 
-                PlQueryHandler.deleteProducts(this);
-
                 PlQueryHandler.addProducts(this, products);
 
                 BusProvider.getInstance().post(products);
@@ -122,6 +120,9 @@ public class PLIntentService extends IntentService {
 
                 Log.d(LOG_TAG, jsonItem);
                 Product product = (new Gson()).fromJson(jsonItem, Product.class);
+
+                PlQueryHandler.updateProduct(this, product);
+
                 BusProvider.getInstance().post(product);
 
                 break;

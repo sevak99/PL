@@ -13,6 +13,11 @@
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_drawer_arrow"
             android:title="@string/text_about"/>
+
+        <item
+            android:id="@+id/nav_favorite_products"
+            android:icon="@drawable/ic_drawer_arrow"
+            android:title="@string/text_favorite_products"/>
     </group>
 
 </menu>

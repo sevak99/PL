@@ -79,11 +79,13 @@ public class CursorReader {
 
     private static Product composeProduct(Cursor cursor) {
         Product product = new Product();
-        product.setId(cursor.getString(cursor.getColumnIndex(PlDataBase.PRODUCT_ID)));
+        product.setId(cursor.getLong(cursor.getColumnIndex(PlDataBase.PRODUCT_ID)));
         product.setName(cursor.getString(cursor.getColumnIndex(PlDataBase.PRODUCT_NAME)));
         product.setImage(cursor.getString(cursor.getColumnIndex(PlDataBase.PRODUCT_IMAGE)));
+        product.setFavorite(cursor.getInt(cursor.getColumnIndex(PlDataBase.PRODUCT_FAVORITE)));
+        product.setFromUser(cursor.getInt(cursor.getColumnIndex(PlDataBase.PRODUCT_IS_FROM_USER)));
         product.setDescription(cursor.getString(cursor.getColumnIndex(PlDataBase.PRODUCT_DESCRIPTION)));
-        product.setPrice(cursor.getInt(cursor.getColumnIndex(PlDataBase.PRODUCT_PRICE)));
+        product.setPrice(cursor.getLong(cursor.getColumnIndex(PlDataBase.PRODUCT_PRICE)));
         return product;
     }
 

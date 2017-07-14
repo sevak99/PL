@@ -4,9 +4,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -34,13 +37,14 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     // Fields
     // ===========================================================
 
-    private PlAsyncQueryHandler mPlAsyncQueryHandler;
     private EditText mEtProductTitle;
     private EditText mEtProductPrice;
     private EditText mEtProductDescription;
     private ImageView mIvProductImage;
     private Button mBtnProductAdd;
+    private MenuItem mMenuFavorite;
     private Product mProduct;
+    private PlAsyncQueryHandler mPlAsyncQueryHandler;
 
     // ===========================================================
     // Constructors
@@ -69,13 +73,11 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_product_item, menu);
+        mMenuFavorite = menu.findItem(R.id.menu_product_favorite);
+
+        return true;
     }
 
     // ===========================================================
@@ -86,28 +88,57 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add_product_add:
-                createProduct();
-
-                if (mProduct != null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                            .setMessage(R.string.msg_add_product)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mPlAsyncQueryHandler.addProduct(mProduct);
-
-                                    Intent intent = new Intent();
-                                    intent.putExtra(Constant.Extra.EXTRA_PRODUCT_ID, mProduct.getId());
-                                    setResult(RESULT_OK, intent);
-                                    finish();
-                                }
-                            })
-                            .setNegativeButton(R.string.cancel, null);
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
+                if (mEtProductTitle.getText().length() == 0) {
+                    Toast.makeText(this, R.string.msg_no_title, Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (mEtProductPrice.getText().length() == 0) {
+                    Toast.makeText(this, R.string.msg_no_price, Toast.LENGTH_SHORT).show();
+                    break;
                 }
+
+                createProduct(
+                        mEtProductTitle.getText().toString(),
+                        Long.parseLong(mEtProductPrice.getText().toString()),
+                        mEtProductDescription.getText().toString()
+                );
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                        .setMessage(R.string.msg_add_product)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mPlAsyncQueryHandler.addProduct(mProduct);
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
                 break;
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            case R.id.menu_product_favorite:
+                if (mProduct.isFavorite()) {
+                    mMenuFavorite.setIcon(R.drawable.ic_not_favorite);
+                    mProduct.setFavorite(false);
+                } else {
+                    mMenuFavorite.setIcon(R.drawable.ic_favorite);
+                    mProduct.setFavorite(true);
+                }
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // ===========================================================
@@ -120,7 +151,10 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onInsertComplete(int token, Object cookie, Uri uri) {
-
+        Intent intent = new Intent();
+        intent.putExtra(Constant.Extra.EXTRA_PRODUCT, mProduct);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
@@ -150,7 +184,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     }
 
     private void customizeActionBar() {
-        setActionBarTitle(getString(R.string.add_product_activity));
+        setActionBarTitle(getString(R.string.text_add_product));
     }
 
     private void init() {
@@ -159,25 +193,17 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mIvProductImage);
 
+        mProduct = new Product();
         mPlAsyncQueryHandler = new PlAsyncQueryHandler(getApplicationContext(), this);
     }
 
-    private void createProduct() {
-        if(mEtProductTitle.getText().length() == 0) {
-            Toast.makeText(this, R.string.msg_no_title, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(mEtProductPrice.getText().length() == 0) {
-            Toast.makeText(this, R.string.msg_no_price, Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void createProduct(String name, long price, String description) {
 
-        mProduct = new Product();
-
-        mProduct.setId(String.valueOf(System.currentTimeMillis()));
-        mProduct.setName(mEtProductTitle.getText().toString());
-        mProduct.setPrice(Integer.parseInt(mEtProductPrice.getText().toString()));
-        mProduct.setDescription(mEtProductDescription.getText().toString());
+        mProduct.setId(System.currentTimeMillis());
+        mProduct.setName(name);
+        mProduct.setPrice(price);
+        mProduct.setFromUser(true);
+        mProduct.setDescription(description);
         mProduct.setImage(Constant.Image.DEFULT_IMAGE);
     }
 

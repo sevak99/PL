@@ -26,6 +26,7 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
         public static final int UPDATE_PRODUCT = 104;
         public static final int DELETE_PRODUCT = 105;
         public static final int DELETE_PRODUCTS = 106;
+        public static final int GET_FAVORITE_PRODUCTS = 107;
     }
 
     // ===========================================================
@@ -136,6 +137,18 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
                 PlDataBase.Projection.PRODUCT,
                 null,
                 null,
+                null
+        );
+    }
+
+    public synchronized void getFavoriteProducts() {
+        startQuery(
+                QueryToken.GET_FAVORITE_PRODUCTS,
+                null,
+                UriBuilder.buildProductUri(),
+                PlDataBase.Projection.PRODUCT,
+                PlDataBase.PRODUCT_FAVORITE + "=?",
+                new String[]{String.valueOf(1)},
                 null
         );
     }

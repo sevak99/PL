@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.ui.fragment.AboutFragment;
+import com.abrahamyan.pl.ui.fragment.FavoriteProductsFragment;
 import com.abrahamyan.pl.ui.fragment.ProductListFragment;
 import com.abrahamyan.pl.util.FragmentTransactionManager;
 
@@ -64,26 +65,6 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
         return R.layout.activity_main;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if(mNavigationView.getMenu().findItem(R.id.nav_product_list).isChecked() == false) {
-            for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                getSupportFragmentManager().popBackStack();
-            }
-
-            mNavigationView.getMenu().findItem(R.id.nav_product_list).setChecked(true);
-            openScreen(
-                    ProductListFragment.newInstance(),
-                    R.id.nav_product_list,
-                    false
-            );
-        } else {
-            finish();
-        }
-    }
-
     // ===========================================================
     // Observer callback
     // ===========================================================
@@ -100,6 +81,14 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
     public boolean onCreateOptionsMenu(Menu menu) {
 //        getMenuInflater().inflate(R.menu.menu_add_product, menu);
         return true;
+    }
+
+    // ===========================================================
+    // Click Listeners
+    // ===========================================================
+
+    @Override
+    public void onClick(View v) {
     }
 
     @Override
@@ -120,20 +109,38 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
                         R.id.nav_about,
                         true
                 );
-
                 break;
+
+            case R.id.nav_favorite_products:
+                openScreen(
+                        FavoriteProductsFragment.newInstance(),
+                        R.id.nav_favorite_products,
+                        false
+                );
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    // ===========================================================
-    // Click Listeners
-    // ===========================================================
-
     @Override
-    public void onClick(View v) {
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if(mNavigationView.getMenu().findItem(R.id.nav_product_list).isChecked() == false) {
+            for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                getSupportFragmentManager().popBackStack();
+            }
+
+            mNavigationView.getMenu().findItem(R.id.nav_product_list).setChecked(true);
+            openScreen(
+                    ProductListFragment.newInstance(),
+                    R.id.nav_product_list,
+                    false
+            );
+        } else {
+            finish();
+        }
     }
 
     // ===========================================================

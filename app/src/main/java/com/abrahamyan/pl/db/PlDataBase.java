@@ -33,15 +33,19 @@ public class PlDataBase {
     public static final String PRODUCT_NAME = "PRODUCT_NAME";
     public static final String PRODUCT_PRICE = "PRODUCT_PRICE";
     public static final String PRODUCT_IMAGE = "PRODUCT_IMAGE";
+    public static final String PRODUCT_FAVORITE = "PRODUCT_FAVORITE";
+    public static final String PRODUCT_IS_FROM_USER = "PRODUCT_IS_FROM_USER";
     public static final String PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION";
 
     public static final String CREATE_PRODUCT_TABLE = "CREATE TABLE IF NOT EXISTS " + PRODUCT_TABLE
             + " ("
             + PRODUCT_PK + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + PRODUCT_ID + " INTEGER, "
+            + PRODUCT_ID + " INTEGER UNIQUE, "
             + PRODUCT_NAME + " TEXT, "
-            + PRODUCT_PRICE + " TEXT, "
+            + PRODUCT_PRICE + " INTEGER, "
             + PRODUCT_IMAGE + " TEXT, "
+            + PRODUCT_FAVORITE + " INTEGER, "
+            + PRODUCT_IS_FROM_USER + " INTEGER, "
             + PRODUCT_DESCRIPTION + " TEXT "
             + ");";
 
@@ -56,6 +60,8 @@ public class PlDataBase {
                 PlDataBase.PRODUCT_NAME,
                 PlDataBase.PRODUCT_PRICE,
                 PlDataBase.PRODUCT_IMAGE,
+                PlDataBase.PRODUCT_FAVORITE,
+                PlDataBase.PRODUCT_IS_FROM_USER,
                 PlDataBase.PRODUCT_DESCRIPTION
         };
     }
@@ -94,6 +100,8 @@ public class PlDataBase {
                 values.put(PlDataBase.PRODUCT_NAME, product.getName());
                 values.put(PlDataBase.PRODUCT_PRICE, product.getPrice());
                 values.put(PlDataBase.PRODUCT_IMAGE, product.getImage());
+                values.put(PlDataBase.PRODUCT_FAVORITE, product.isFavorite() ? 1 : 0);
+                values.put(PlDataBase.PRODUCT_IS_FROM_USER, product.isFromUser() ? 1 : 0);
                 values.put(PlDataBase.PRODUCT_DESCRIPTION, product.getDescription());
                 break;
         }
@@ -112,6 +120,8 @@ public class PlDataBase {
                     values.put(PlDataBase.PRODUCT_NAME, product.getName());
                     values.put(PlDataBase.PRODUCT_PRICE, product.getPrice());
                     values.put(PlDataBase.PRODUCT_IMAGE, product.getImage());
+                    values.put(PlDataBase.PRODUCT_FAVORITE, product.isFavorite() ? 1 : 0);
+                    values.put(PlDataBase.PRODUCT_IS_FROM_USER, product.isFromUser() ? 1 : 0);
                     values.put(PlDataBase.PRODUCT_DESCRIPTION, product.getDescription());
                     valuesList.add(values);
                 }

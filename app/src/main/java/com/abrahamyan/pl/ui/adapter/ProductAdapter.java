@@ -52,7 +52,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public ProductViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.adapter_item_product, viewGroup, false);
-        return new ProductViewHolder(view, mProductArrayList, mOnItemClickListener);
+        return new ProductViewHolder(view, mOnItemClickListener);
     }
 
     @Override
@@ -89,18 +89,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
 
-        Context context;
-        TextView tvProductTitle;
-        TextView tvProductPrice;
-        ImageView ivProductImage;
-        LinearLayout llItemContainer;
-        OnItemClickListener onItemClickListener;
-        ArrayList<Product> productArrayList;
+        private TextView tvProductTitle;
+        private TextView tvProductPrice;
+        private ImageView ivProductImage;
+        private ImageView ivProductFavorite;
+        private LinearLayout llItemContainer;
+        private OnItemClickListener onItemClickListener;
+        private Context context;
 
-        ProductViewHolder(View itemView, ArrayList<Product> productArrayList, OnItemClickListener onItemClickListener) {
+
+        public ProductViewHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             this.context = itemView.getContext();
-            this.productArrayList = productArrayList;
             this.onItemClickListener = onItemClickListener;
             findViews(itemView);
         }
@@ -110,19 +110,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             tvProductTitle = (TextView) view.findViewById(R.id.tv_product_item_title);
             tvProductPrice = (TextView) view.findViewById(R.id.tv_product_item_price);
             ivProductImage = (ImageView) view.findViewById(R.id.iv_product_item_logo);
+            ivProductFavorite = (ImageView) view.findViewById(R.id.iv_product_item_favorite);
         }
 
         void bindData(final Product product) {
 
-            Glide.with(itemView.getContext())
+            Glide.with(context)
                     .load(product.getImage())
                     .placeholder(R.drawable.ic_get_app_black_24dp)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(ivProductImage);
 
             tvProductTitle.setText(product.getName());
-
             tvProductPrice.setText(String.valueOf(product.getPrice()));
+            if(product.isFavorite())
+                ivProductFavorite.setVisibility(View.VISIBLE);
+            else
+                ivProductFavorite.setVisibility(View.GONE);
 
             llItemContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
