@@ -18,6 +18,12 @@
             android:id="@+id/nav_favorite_products"
             android:icon="@drawable/ic_drawer_arrow"
             android:title="@string/text_favorite_products"/>
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_drawer_arrow"
+            android:title="@string/text_logout"/>
+
     </group>
 
 </menu>

@@ -89,10 +89,10 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.btn_add_product_add:
                 if (mEtProductTitle.getText().length() == 0) {
-                    Toast.makeText(this, R.string.msg_no_title, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.msg_edt_title_error, Toast.LENGTH_SHORT).show();
                     break;
                 } else if (mEtProductPrice.getText().length() == 0) {
-                    Toast.makeText(this, R.string.msg_no_price, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.msg_edt_price_error, Toast.LENGTH_SHORT).show();
                     break;
                 }
 
@@ -202,7 +202,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         mProduct.setId(System.currentTimeMillis());
         mProduct.setName(name);
         mProduct.setPrice(price);
-        mProduct.setFromUser(true);
+        mProduct.setUser(true);
         mProduct.setDescription(description);
         mProduct.setImage(Constant.Image.DEFULT_IMAGE);
     }

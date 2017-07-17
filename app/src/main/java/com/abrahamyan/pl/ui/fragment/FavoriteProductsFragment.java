@@ -26,8 +26,6 @@ import com.abrahamyan.pl.util.Constant;
 
 import java.util.ArrayList;
 
-import static android.app.Activity.RESULT_OK;
-
 public class FavoriteProductsFragment extends BaseFragment implements View.OnClickListener,
         ProductAdapter.OnItemClickListener, PlAsyncQueryHandler.AsyncQueryListener {
 
@@ -92,6 +90,12 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
         return view;
     }
 
+    @Override
+    public void onResume() {
+        mPlAsyncQueryHandler.getFavoriteProducts();
+        super.onResume();
+    }
+
     // ===========================================================
     // Click Listeners
     // ===========================================================
@@ -106,7 +110,7 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
     public void onItemClick(Product product) {
         Intent intent = new Intent(getActivity(), ProductActivity.class);
         intent.putExtra(Constant.Extra.EXTRA_PRODUCT, product);
-        startActivityForResult(intent, Constant.RequestCode.PRODUCT_ACTIVITY);
+        startActivity(intent);
     }
 
     @Override
@@ -130,17 +134,6 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
     // ===========================================================
     // Other Listeners, methods for/from Interfaces
     // ===========================================================
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case Constant.RequestCode.PRODUCT_ACTIVITY:
-                    mPlAsyncQueryHandler.getFavoriteProducts();
-                    break;
-            }
-        }
-    }
 
     @Override
     public void onQueryComplete(int token, Object cookie, Cursor cursor) {

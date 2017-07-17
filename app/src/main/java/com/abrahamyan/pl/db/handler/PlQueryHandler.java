@@ -49,21 +49,30 @@ public class PlQueryHandler {
     public synchronized static void addProduct(Context context, Product product) {
         context.getContentResolver().insert(
                 UriBuilder.buildProductUri(),
-                PlDataBase.composeValues(product, PlDataBase.PRODUCT_TABLE)
+                PlDataBase.composeValues(product, PlDataBase.ContentValuesType.PRODUCTS)
         );
     }
 
     public synchronized static void addProducts(Context context, ArrayList<Product> products) {
         context.getContentResolver().bulkInsert(
                 UriBuilder.buildProductUri(),
-                PlDataBase.composeValuesArray(products, PlDataBase.PRODUCT_TABLE)
+                PlDataBase.composeValuesArray(products, PlDataBase.ContentValuesType.PRODUCTS)
         );
     }
 
     public synchronized static void updateProduct(Context context, Product product) {
         context.getContentResolver().update(
                 UriBuilder.buildProductUri(),
-                PlDataBase.composeValues(product, PlDataBase.PRODUCT_TABLE),
+                PlDataBase.composeValues(product, PlDataBase.ContentValuesType.PRODUCTS),
+                PlDataBase.PRODUCT_ID + "=?",
+                new String[]{String.valueOf(product.getId())}
+        );
+    }
+
+    public synchronized static void updateProductDescription(Context context, Product product) {
+        context.getContentResolver().update(
+                UriBuilder.buildProductUri(),
+                PlDataBase.composeValues(product, PlDataBase.ContentValuesType.DESCRIPTION),
                 PlDataBase.PRODUCT_ID + "=?",
                 new String[]{String.valueOf(product.getId())}
         );
@@ -73,7 +82,7 @@ public class PlQueryHandler {
         for (Product product : products) {
             context.getContentResolver().update(
                     UriBuilder.buildProductUri(),
-                    PlDataBase.composeValues(product, PlDataBase.PRODUCT_TABLE),
+                    PlDataBase.composeValues(product, PlDataBase.ContentValuesType.ALL_EXCEPT_FAVORITE),
                     PlDataBase.PRODUCT_ID + "=?",
                     new String[]{String.valueOf(product.getId())}
             );

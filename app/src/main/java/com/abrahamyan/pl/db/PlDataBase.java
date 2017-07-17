@@ -18,6 +18,12 @@ public class PlDataBase {
 
     private static final String LOG_TAG = PlDataBase.class.getSimpleName();
 
+    public static class ContentValuesType {
+        public static final String PRODUCTS = "PRODUCTS";
+        public static final String DESCRIPTION = "DESCRIPTION";
+        public static final String ALL_EXCEPT_FAVORITE = "ALL_EXCEPT_FAVORITE";
+    }
+
     // ===========================================================
     // Fields
     // ===========================================================
@@ -34,7 +40,7 @@ public class PlDataBase {
     public static final String PRODUCT_PRICE = "PRODUCT_PRICE";
     public static final String PRODUCT_IMAGE = "PRODUCT_IMAGE";
     public static final String PRODUCT_FAVORITE = "PRODUCT_FAVORITE";
-    public static final String PRODUCT_IS_FROM_USER = "PRODUCT_IS_FROM_USER";
+    public static final String PRODUCT_USER = "PRODUCT_USER";
     public static final String PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION";
 
     public static final String CREATE_PRODUCT_TABLE = "CREATE TABLE IF NOT EXISTS " + PRODUCT_TABLE
@@ -45,7 +51,7 @@ public class PlDataBase {
             + PRODUCT_PRICE + " INTEGER, "
             + PRODUCT_IMAGE + " TEXT, "
             + PRODUCT_FAVORITE + " INTEGER, "
-            + PRODUCT_IS_FROM_USER + " INTEGER, "
+            + PRODUCT_USER + " INTEGER, "
             + PRODUCT_DESCRIPTION + " TEXT "
             + ");";
 
@@ -61,7 +67,7 @@ public class PlDataBase {
                 PlDataBase.PRODUCT_PRICE,
                 PlDataBase.PRODUCT_IMAGE,
                 PlDataBase.PRODUCT_FAVORITE,
-                PlDataBase.PRODUCT_IS_FROM_USER,
+                PlDataBase.PRODUCT_USER,
                 PlDataBase.PRODUCT_DESCRIPTION
         };
     }
@@ -92,16 +98,31 @@ public class PlDataBase {
 
     public static ContentValues composeValues(Object object, String table) {
         ContentValues values = new ContentValues();
+        Product product;
 
         switch (table) {
-            case PlDataBase.PRODUCT_TABLE:
-                Product product = (Product) object;
+            case ContentValuesType.PRODUCTS:
+                product = (Product) object;
                 values.put(PlDataBase.PRODUCT_ID, product.getId());
                 values.put(PlDataBase.PRODUCT_NAME, product.getName());
                 values.put(PlDataBase.PRODUCT_PRICE, product.getPrice());
                 values.put(PlDataBase.PRODUCT_IMAGE, product.getImage());
                 values.put(PlDataBase.PRODUCT_FAVORITE, product.isFavorite() ? 1 : 0);
-                values.put(PlDataBase.PRODUCT_IS_FROM_USER, product.isFromUser() ? 1 : 0);
+                values.put(PlDataBase.PRODUCT_USER, product.isUser() ? 1 : 0);
+                values.put(PlDataBase.PRODUCT_DESCRIPTION, product.getDescription());
+                break;
+
+            case ContentValuesType.DESCRIPTION:
+                product = (Product) object;
+                values.put(PlDataBase.PRODUCT_DESCRIPTION, product.getDescription());
+
+            case ContentValuesType.ALL_EXCEPT_FAVORITE:
+                product = (Product) object;
+                values.put(PlDataBase.PRODUCT_ID, product.getId());
+                values.put(PlDataBase.PRODUCT_NAME, product.getName());
+                values.put(PlDataBase.PRODUCT_PRICE, product.getPrice());
+                values.put(PlDataBase.PRODUCT_IMAGE, product.getImage());
+                values.put(PlDataBase.PRODUCT_USER, product.isUser() ? 1 : 0);
                 values.put(PlDataBase.PRODUCT_DESCRIPTION, product.getDescription());
                 break;
         }
@@ -112,7 +133,7 @@ public class PlDataBase {
         ArrayList<ContentValues> valuesList = new ArrayList<>();
 
         switch (table) {
-            case PlDataBase.PRODUCT_TABLE:
+            case ContentValuesType.PRODUCTS:
                 ArrayList<Product> products = (ArrayList<Product>) objects;
                 for (Product product : products) {
                     ContentValues values = new ContentValues();
@@ -121,7 +142,7 @@ public class PlDataBase {
                     values.put(PlDataBase.PRODUCT_PRICE, product.getPrice());
                     values.put(PlDataBase.PRODUCT_IMAGE, product.getImage());
                     values.put(PlDataBase.PRODUCT_FAVORITE, product.isFavorite() ? 1 : 0);
-                    values.put(PlDataBase.PRODUCT_IS_FROM_USER, product.isFromUser() ? 1 : 0);
+                    values.put(PlDataBase.PRODUCT_USER, product.isUser() ? 1 : 0);
                     values.put(PlDataBase.PRODUCT_DESCRIPTION, product.getDescription());
                     valuesList.add(values);
                 }

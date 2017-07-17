@@ -9,6 +9,7 @@ import com.abrahamyan.pl.db.entity.Product;
 import com.abrahamyan.pl.db.entity.ProductResponse;
 import com.abrahamyan.pl.db.handler.PlQueryHandler;
 import com.abrahamyan.pl.io.bus.BusProvider;
+import com.abrahamyan.pl.io.bus.event.ApiEvent;
 import com.abrahamyan.pl.io.rest.HttpRequestManager;
 import com.abrahamyan.pl.io.rest.HttpResponseUtil;
 import com.abrahamyan.pl.util.Constant;
@@ -100,11 +101,21 @@ public class PLIntentService extends IntentService {
 
                 Log.d(LOG_TAG, jsonList);
                 ProductResponse productResponse = (new Gson()).fromJson(jsonList, ProductResponse.class);
-                ArrayList<Product> products = productResponse.getProducts();
 
-                PlQueryHandler.addProducts(this, products);
+                if (productResponse != null) {
 
-                BusProvider.getInstance().post(products);
+                    ArrayList<Product> products = productResponse.getProducts();
+
+                    PlQueryHandler.updateProducts(this, products);
+                    PlQueryHandler.addProducts(this, products);
+
+                    BusProvider.getInstance().post(new ApiEvent<>(ApiEvent.EventType.PRODUCT_LIST_LOADED, true));
+
+                } else {
+                    BusProvider.getInstance().post(new ApiEvent<>(ApiEvent.EventType.PRODUCT_LIST_LOADED, false));
+
+                }
+
 
                 break;
 
@@ -121,9 +132,14 @@ public class PLIntentService extends IntentService {
                 Log.d(LOG_TAG, jsonItem);
                 Product product = (new Gson()).fromJson(jsonItem, Product.class);
 
-                PlQueryHandler.updateProduct(this, product);
+                if (product != null) {
+                    PlQueryHandler.updateProductDescription(this, product);
 
-                BusProvider.getInstance().post(product);
+                    BusProvider.getInstance().post(new ApiEvent<>(ApiEvent.EventType.PRODUCT_LIST_LOADED, true, product));
+                } else {
+                    BusProvider.getInstance().post(new ApiEvent<>(ApiEvent.EventType.PRODUCT_LIST_LOADED, false));
+
+                }
 
                 break;
         }

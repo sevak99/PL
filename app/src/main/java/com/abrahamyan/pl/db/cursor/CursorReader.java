@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.abrahamyan.pl.db.PlDataBase;
 import com.abrahamyan.pl.db.entity.Product;
+import com.abrahamyan.pl.util.AppUtil;
 
 import java.util.ArrayList;
 
@@ -82,8 +83,8 @@ public class CursorReader {
         product.setId(cursor.getLong(cursor.getColumnIndex(PlDataBase.PRODUCT_ID)));
         product.setName(cursor.getString(cursor.getColumnIndex(PlDataBase.PRODUCT_NAME)));
         product.setImage(cursor.getString(cursor.getColumnIndex(PlDataBase.PRODUCT_IMAGE)));
-        product.setFavorite(cursor.getInt(cursor.getColumnIndex(PlDataBase.PRODUCT_FAVORITE)));
-        product.setFromUser(cursor.getInt(cursor.getColumnIndex(PlDataBase.PRODUCT_IS_FROM_USER)));
+        product.setFavorite(AppUtil.intToBoolean(cursor.getInt(cursor.getColumnIndex(PlDataBase.PRODUCT_FAVORITE))));
+        product.setUser(AppUtil.intToBoolean(cursor.getInt(cursor.getColumnIndex(PlDataBase.PRODUCT_USER))));
         product.setDescription(cursor.getString(cursor.getColumnIndex(PlDataBase.PRODUCT_DESCRIPTION)));
         product.setPrice(cursor.getLong(cursor.getColumnIndex(PlDataBase.PRODUCT_PRICE)));
         return product;

@@ -20,7 +20,6 @@ public class Constant {
 
     public static class RequestCode {
         public static final int ADD_PRODUCT_ACTIVITY = 1;
-        public static final int PRODUCT_ACTIVITY = 2;
     }
 
     public class Bundle {

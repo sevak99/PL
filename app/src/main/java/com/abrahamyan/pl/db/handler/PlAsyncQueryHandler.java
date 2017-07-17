@@ -8,6 +8,7 @@ import android.net.Uri;
 import com.abrahamyan.pl.db.PlDataBase;
 import com.abrahamyan.pl.db.entity.Product;
 import com.abrahamyan.pl.db.provider.UriBuilder;
+import com.abrahamyan.pl.util.AppUtil;
 
 import java.lang.ref.WeakReference;
 
@@ -27,6 +28,7 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
         public static final int DELETE_PRODUCT = 105;
         public static final int DELETE_PRODUCTS = 106;
         public static final int GET_FAVORITE_PRODUCTS = 107;
+        public static final int GET_USER_PRODUCTS = 108;
     }
 
     // ===========================================================
@@ -148,7 +150,7 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
                 UriBuilder.buildProductUri(),
                 PlDataBase.Projection.PRODUCT,
                 PlDataBase.PRODUCT_FAVORITE + "=?",
-                new String[]{String.valueOf(1)},
+                new String[]{String.valueOf(AppUtil.booleanToInt(true))},
                 null
         );
     }
@@ -158,7 +160,7 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
                 QueryToken.ADD_PRODUCT,
                 null,
                 UriBuilder.buildProductUri(),
-                PlDataBase.composeValues(product, PlDataBase.PRODUCT_TABLE)
+                PlDataBase.composeValues(product, PlDataBase.ContentValuesType.PRODUCTS)
         );
     }
 
@@ -167,7 +169,7 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
                 QueryToken.UPDATE_PRODUCT,
                 null,
                 UriBuilder.buildProductUri(),
-                PlDataBase.composeValues(product, PlDataBase.PRODUCT_TABLE),
+                PlDataBase.composeValues(product, PlDataBase.ContentValuesType.PRODUCTS),
                 PlDataBase.PRODUCT_ID + "=?",
                 new String[]{String.valueOf(product.getId())}
         );

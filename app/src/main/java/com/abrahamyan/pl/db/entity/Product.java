@@ -47,9 +47,9 @@ public class Product implements Parcelable {
     @SerializedName(Constant.Json.DESCRIPTION)
     private String description;
 
-    private boolean favorite = false;
+    private boolean favorite;
 
-    private boolean fromUser = false;
+    private boolean isUser;
 
     // ===========================================================
     // Constructors
@@ -64,7 +64,7 @@ public class Product implements Parcelable {
                    String image,
                    String description,
                    boolean favorite,
-                   boolean fromUser) {
+                   boolean isUser) {
 
         this.id = id;
         this.name = name;
@@ -72,7 +72,7 @@ public class Product implements Parcelable {
         this.image = image;
         this.description = description;
         this.favorite = favorite;
-        this.fromUser = fromUser;
+        this.isUser = isUser;
     }
 
     protected Product(Parcel in) {
@@ -82,7 +82,7 @@ public class Product implements Parcelable {
         this.image = in.readString();
         this.description = in.readString();
         this.favorite = in.readByte() != 0;
-        this.fromUser = in.readByte() != 0;
+        this.isUser = in.readByte() != 0;
     }
 
     // ===========================================================
@@ -137,22 +137,13 @@ public class Product implements Parcelable {
         this.favorite = favorite;
     }
 
-    public void setFavorite(int favorite) {
-        this.favorite = (favorite != 0);
+    public boolean isUser() {
+        return isUser;
     }
 
-    public boolean isFromUser() {
-        return fromUser;
+    public void setUser(boolean user) {
+        this.isUser = user;
     }
-
-    public void setFromUser(boolean fromUser) {
-        this.fromUser = fromUser;
-    }
-
-    public void setFromUser(int fromUser) {
-        this.fromUser = (fromUser != 0);
-    }
-
 
     // ===========================================================
     // Other Listeners, methods for/from Interfaces
@@ -171,6 +162,6 @@ public class Product implements Parcelable {
         dest.writeString(this.image);
         dest.writeString(this.description);
         dest.writeByte(this.favorite ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.fromUser ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isUser ? (byte) 1 : (byte) 0);
     }
 }

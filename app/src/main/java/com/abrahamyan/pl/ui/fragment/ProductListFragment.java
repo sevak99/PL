@@ -17,12 +17,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.db.cursor.CursorReader;
 import com.abrahamyan.pl.db.entity.Product;
 import com.abrahamyan.pl.db.handler.PlAsyncQueryHandler;
 import com.abrahamyan.pl.io.bus.BusProvider;
+import com.abrahamyan.pl.io.bus.event.ApiEvent;
 import com.abrahamyan.pl.io.rest.HttpRequestManager;
 import com.abrahamyan.pl.io.service.PLIntentService;
 import com.abrahamyan.pl.ui.activity.AddProductActivity;
@@ -105,6 +107,12 @@ public class ProductListFragment extends BaseFragment
     }
 
     @Override
+    public void onResume() {
+        mPlAsyncQueryHandler.getProducts();
+        super.onResume();
+    }
+
+    @Override
     public void onDestroyView() {
         BusProvider.unregister(this);
         super.onDestroyView();
@@ -128,7 +136,7 @@ public class ProductListFragment extends BaseFragment
     public void onItemClick(Product product) {
         Intent intent = new Intent(getActivity(), ProductActivity.class);
         intent.putExtra(Constant.Extra.EXTRA_PRODUCT, product);
-        startActivityForResult(intent, Constant.RequestCode.PRODUCT_ACTIVITY);
+        startActivity(intent);
     }
 
     @Override
@@ -154,12 +162,13 @@ public class ProductListFragment extends BaseFragment
     // ===========================================================
 
     @Subscribe
-    public void onEventReceived(ArrayList<Product> products) {
-//        mProductArrayList.clear();
-//        mProductArrayList.addAll(products);
-//        mRecyclerViewAdapter.notifyDataSetChanged();
-//        mRefreshLayout.setRefreshing(false);
-        mPlAsyncQueryHandler.getProducts();
+    public void onEventReceived(ApiEvent<Object> apiEvent) {
+        if (apiEvent.isSuccess()) {
+            mPlAsyncQueryHandler.getProducts();
+        } else {
+            Toast.makeText(getActivity(), "Something went wrong, please try again",
+                    Toast.LENGTH_SHORT).show();
+        }
         mRefreshLayout.setRefreshing(false);
     }
 
@@ -188,10 +197,6 @@ public class ProductListFragment extends BaseFragment
                     mErrorMsg.setVisibility(View.GONE);
                     mProductArrayList.add(product);
                     mRecyclerViewAdapter.notifyDataSetChanged();
-                    break;
-
-                case Constant.RequestCode.PRODUCT_ACTIVITY:
-                    mPlAsyncQueryHandler.getProducts();
                     break;
             }
         }

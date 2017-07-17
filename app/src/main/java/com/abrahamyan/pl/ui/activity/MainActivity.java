@@ -1,5 +1,6 @@
 package com.abrahamyan.pl.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.abrahamyan.pl.ui.fragment.AboutFragment;
 import com.abrahamyan.pl.ui.fragment.FavoriteProductsFragment;
 import com.abrahamyan.pl.ui.fragment.ProductListFragment;
 import com.abrahamyan.pl.util.FragmentTransactionManager;
+import com.abrahamyan.pl.util.Preference;
 
 public class MainActivity extends  BaseActivity  implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -117,6 +119,12 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
                         R.id.nav_favorite_products,
                         false
                 );
+
+                break;
+
+            case R.id.nav_logout:
+                logout();
+                break;
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -181,6 +189,17 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
                 R.id.fl_main_container,
                 mustAddToBackStack
         );
+    }
+
+    private void logout() {
+        mNavigationView.getMenu().findItem(R.id.nav_logout).setChecked(true);
+        Preference.getInstance(this).setUserMail(null);
+        Preference.getInstance(this).setUserPass(null);
+
+        Intent intent = new Intent(this, AuthActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     // ===========================================================
