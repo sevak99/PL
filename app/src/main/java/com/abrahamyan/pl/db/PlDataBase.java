@@ -3,6 +3,7 @@ package com.abrahamyan.pl.db;
 import android.content.ContentValues;
 
 import com.abrahamyan.pl.db.entity.Product;
+import com.abrahamyan.pl.util.AppUtil;
 
 import java.util.ArrayList;
 
@@ -96,19 +97,19 @@ public class PlDataBase {
      * VALUES
      ***************************************************************/
 
-    public static ContentValues composeValues(Object object, String table) {
+    public static ContentValues composeValues(Object object, String type) {
         ContentValues values = new ContentValues();
         Product product;
 
-        switch (table) {
+        switch (type) {
             case ContentValuesType.PRODUCTS:
                 product = (Product) object;
                 values.put(PlDataBase.PRODUCT_ID, product.getId());
                 values.put(PlDataBase.PRODUCT_NAME, product.getName());
                 values.put(PlDataBase.PRODUCT_PRICE, product.getPrice());
                 values.put(PlDataBase.PRODUCT_IMAGE, product.getImage());
-                values.put(PlDataBase.PRODUCT_FAVORITE, product.isFavorite() ? 1 : 0);
-                values.put(PlDataBase.PRODUCT_USER, product.isUser() ? 1 : 0);
+                values.put(PlDataBase.PRODUCT_FAVORITE, AppUtil.booleanToInt(product.isFavorite()));
+                values.put(PlDataBase.PRODUCT_USER, AppUtil.booleanToInt(product.isUser()));
                 values.put(PlDataBase.PRODUCT_DESCRIPTION, product.getDescription());
                 break;
 
@@ -122,7 +123,7 @@ public class PlDataBase {
                 values.put(PlDataBase.PRODUCT_NAME, product.getName());
                 values.put(PlDataBase.PRODUCT_PRICE, product.getPrice());
                 values.put(PlDataBase.PRODUCT_IMAGE, product.getImage());
-                values.put(PlDataBase.PRODUCT_USER, product.isUser() ? 1 : 0);
+                values.put(PlDataBase.PRODUCT_USER, AppUtil.booleanToInt(product.isFavorite()));
                 values.put(PlDataBase.PRODUCT_DESCRIPTION, product.getDescription());
                 break;
         }

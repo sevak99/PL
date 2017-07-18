@@ -53,13 +53,6 @@ public class PlDataBaseHelper extends SQLiteOpenHelper {
         Log.d(LOG_TAG, "Table upgraded");
     }
 
-    public void onChange(SQLiteDatabase db) {
-        db.execSQL("DROP TABLE IF EXISTS" + PlDataBase.PRODUCT_TABLE);
-        onCreate(db);
-        Log.d(LOG_TAG, "Table upgraded");
-    }
-
-
     // ===========================================================
     // Listeners, methods for/from Interfaces
     // ===========================================================

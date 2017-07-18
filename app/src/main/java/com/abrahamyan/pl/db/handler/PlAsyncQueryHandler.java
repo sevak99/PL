@@ -4,6 +4,7 @@ import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import com.abrahamyan.pl.db.PlDataBase;
 import com.abrahamyan.pl.db.entity.Product;
@@ -28,7 +29,6 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
         public static final int DELETE_PRODUCT = 105;
         public static final int DELETE_PRODUCTS = 106;
         public static final int GET_FAVORITE_PRODUCTS = 107;
-        public static final int GET_USER_PRODUCTS = 108;
     }
 
     // ===========================================================
@@ -165,13 +165,15 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
     }
 
     public synchronized void updateProduct(Product product) {
+        Log.d(LOG_TAG, String.valueOf(product.getId()));
+        Log.d(LOG_TAG, String.valueOf(UriBuilder.buildProductUri(product.getId())));
         startUpdate(
                 QueryToken.UPDATE_PRODUCT,
                 null,
-                UriBuilder.buildProductUri(),
+                UriBuilder.buildProductUri(product.getId()),
                 PlDataBase.composeValues(product, PlDataBase.ContentValuesType.PRODUCTS),
-                PlDataBase.PRODUCT_ID + "=?",
-                new String[]{String.valueOf(product.getId())}
+                null,
+                null
         );
     }
 
@@ -179,9 +181,9 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
         startDelete(
                 QueryToken.DELETE_PRODUCT,
                 null,
-                UriBuilder.buildProductUri(),
-                PlDataBase.PRODUCT_ID + "=?",
-                new String[]{String.valueOf(product.getId())}
+                UriBuilder.buildProductUri(product.getId()),
+                null,
+                null
         );
     }
 
