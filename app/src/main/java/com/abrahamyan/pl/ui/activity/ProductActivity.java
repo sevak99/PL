@@ -43,9 +43,9 @@ public class ProductActivity extends BaseActivity
     private TextView mTvProductTitle;
     private TextView mTvProductPrice;
     private TextView mTvProductDescription;
-    private EditText mEvProductTitle;
-    private EditText mEvProductPrice;
-    private EditText mEvProductDescription;
+    private EditText mEtProductTitle;
+    private EditText mEtProductPrice;
+    private EditText mEtProductDescription;
     private ImageView mIvProductImage;
     private LinearLayout mLlProductView;
     private LinearLayout mLlProductEdit;
@@ -54,6 +54,7 @@ public class ProductActivity extends BaseActivity
     private MenuItem mMenuFavorite;
     private Product mProduct;
     private PlAsyncQueryHandler mPlAsyncQueryHandler;
+    private Bundle mBundle;
 
     // ===========================================================
     // Constructors
@@ -73,12 +74,23 @@ public class ProductActivity extends BaseActivity
         BusProvider.register(this);
         findViews();
         getData();
-        init();
+        init(savedInstanceState);
         customizeActionBar();
 
         if (!mProduct.isUser()) {
             loadProduct();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        if (mMenuDone.isVisible()) {
+            savedInstanceState.putString(Constant.Bundle.TITLE, mEtProductTitle.getText().toString());
+            savedInstanceState.putString(Constant.Bundle.PRICE, mEtProductPrice.getText().toString());
+            savedInstanceState.putString(Constant.Bundle.DESCRIPTION, mEtProductDescription.getText().toString());
+        }
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -101,6 +113,10 @@ public class ProductActivity extends BaseActivity
 
         if (mProduct.isUser()) {
             mMenuEdit.setVisible(true);
+        }
+        if (mBundle != null) {
+            mMenuDone.setVisible(true);
+            mMenuEdit.setVisible(false);
         }
         if (mProduct.isFavorite()) {
             mMenuFavorite.setIcon(R.drawable.ic_favorite);
@@ -127,18 +143,18 @@ public class ProductActivity extends BaseActivity
                 return true;
 
             case R.id.menu_product_done:
-                if (mEvProductTitle.getText().length() == 0) {
+                if (mEtProductTitle.getText().length() == 0) {
                     Toast.makeText(this, R.string.msg_edt_title_error, Toast.LENGTH_SHORT).show();
-                } else if (mEvProductPrice.getText().length() == 0) {
+                } else if (mEtProductPrice.getText().length() == 0) {
                     Toast.makeText(this, R.string.msg_edt_price_error, Toast.LENGTH_SHORT).show();
                 } else {
                     mMenuDone.setVisible(false);
                     mMenuEdit.setVisible(true);
 
                     updateProduct(
-                            mEvProductTitle.getText().toString(),
-                            Long.parseLong(mEvProductPrice.getText().toString()),
-                            mEvProductDescription.getText().toString()
+                            mEtProductTitle.getText().toString(),
+                            Long.parseLong(mEtProductPrice.getText().toString()),
+                            mEtProductDescription.getText().toString()
                     );
                     openViewLayout(mProduct);
                 }
@@ -206,23 +222,35 @@ public class ProductActivity extends BaseActivity
         mTvProductPrice = (TextView) findViewById(R.id.tv_product_price);
         mTvProductDescription = (TextView) findViewById(R.id.tv_product_description);
         mLlProductEdit = (LinearLayout) findViewById(R.id.ll_product_editable);
-        mEvProductTitle = (EditText) findViewById(R.id.ev_product_title);
-        mEvProductPrice = (EditText) findViewById(R.id.ev_product_price);
-        mEvProductDescription = (EditText) findViewById(R.id.ev_product_description);
+        mEtProductTitle = (EditText) findViewById(R.id.ev_product_title);
+        mEtProductPrice = (EditText) findViewById(R.id.ev_product_price);
+        mEtProductDescription = (EditText) findViewById(R.id.ev_product_description);
     }
 
     private void customizeActionBar() {
         setActionBarTitle(getString(R.string.text_product));
     }
 
-    private void init() {
+    private void init(Bundle bundle) {
         mPlAsyncQueryHandler = new PlAsyncQueryHandler(ProductActivity.this, this);
 
         Glide.with(this)
                 .load(mProduct.getImage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mIvProductImage);
-        openViewLayout(mProduct);
+
+        mBundle = bundle;
+
+        if(mBundle != null) {
+            Product product = new Product();
+            product.setName(mBundle.getString(Constant.Bundle.TITLE));
+            product.setDescription(mBundle.getString(Constant.Bundle.DESCRIPTION));
+            product.setPrice(mBundle.getInt(Constant.Bundle.PRICE));
+
+            openEditLayout(product);
+        } else {
+            openViewLayout(mProduct);
+        }
     }
 
     private void loadProduct() {
@@ -259,9 +287,9 @@ public class ProductActivity extends BaseActivity
         mLlProductView.setVisibility(View.GONE);
         mLlProductEdit.setVisibility(View.VISIBLE);
 
-        mEvProductTitle.setText(product.getName());
-        mEvProductPrice.setText(String.valueOf(product.getPrice()));
-        mEvProductDescription.setText(product.getDescription());
+        mEtProductTitle.setText(product.getName());
+        mEtProductPrice.setText(String.valueOf(product.getPrice()));
+        mEtProductDescription.setText(product.getDescription());
     }
 
     // ===========================================================

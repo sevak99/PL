@@ -23,6 +23,10 @@ public class Constant {
     }
 
     public class Bundle {
+        public static final String TITLE = "TITLE";
+        public static final String DESCRIPTION = "DESCRIPTION";
+        public static final String PRICE = "PRICE";
+        public static final String FAVORITE = "FAVORITE";
     }
 
     public class Symbol {

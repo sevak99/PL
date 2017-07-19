@@ -50,6 +50,10 @@ public abstract class BaseFragment extends Fragment {
         ((BaseActivity) getActivity()).setActionBarTitle(actionBarTitle);
     }
 
+    public boolean onBackPressed () {
+        return false;
+    }
+
     // ===========================================================
     // Inner and Anonymous Classes
     // ===========================================================

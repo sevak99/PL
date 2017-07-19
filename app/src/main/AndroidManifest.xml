@@ -44,12 +44,10 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.AddProductActivity"
-            android:screenOrientation="portrait"/>
+            android:name=".ui.activity.AddProductActivity" />
 
         <activity
-            android:name=".ui.activity.ProductActivity"
-            android:screenOrientation="portrait" />
+            android:name=".ui.activity.ProductActivity" />
 
     </application>
 

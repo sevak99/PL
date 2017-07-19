@@ -1,20 +1,22 @@
 package com.abrahamyan.pl.ui.activity;
 
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.ui.fragment.AboutFragment;
+import com.abrahamyan.pl.ui.fragment.BaseFragment;
 import com.abrahamyan.pl.ui.fragment.FavoriteProductsFragment;
 import com.abrahamyan.pl.ui.fragment.ProductListFragment;
 import com.abrahamyan.pl.util.FragmentTransactionManager;
@@ -135,21 +137,24 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if(mNavigationView.getMenu().findItem(R.id.nav_product_list).isChecked() == false) {
-            for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                getSupportFragmentManager().popBackStack();
-            }
-
-            mNavigationView.getMenu().findItem(R.id.nav_product_list).setChecked(true);
-            openScreen(
-                    ProductListFragment.newInstance(),
-                    R.id.nav_product_list,
-                    false
-            );
         } else {
-            finish();
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_main_container);
+            Log.d(LOG_TAG, fragment.getClass().getSimpleName());
+            if(!((BaseFragment) fragment).onBackPressed()) {
+                if(!(fragment instanceof ProductListFragment)) {
+                    mNavigationView.getMenu().findItem(R.id.nav_product_list).setChecked(true);
+                    openScreen(
+                            ProductListFragment.newInstance(),
+                            R.id.nav_product_list,
+                            false
+                    );
+                } else {
+                    finish();
+                }
+            }
         }
     }
+
 
     // ===========================================================
     // Methods

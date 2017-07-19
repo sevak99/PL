@@ -65,6 +65,20 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         init();
         setListeners();
         customizeActionBar();
+
+        if(savedInstanceState != null) {
+            fillData(savedInstanceState);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString(Constant.Bundle.TITLE, mEtProductTitle.getText().toString());
+        savedInstanceState.putString(Constant.Bundle.PRICE, mEtProductPrice.getText().toString());
+        savedInstanceState.putString(Constant.Bundle.DESCRIPTION, mEtProductDescription.getText().toString());
+        savedInstanceState.putBoolean(Constant.Bundle.FAVORITE, mProduct.isFavorite());
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -76,6 +90,9 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_product_item, menu);
         mMenuFavorite = menu.findItem(R.id.menu_product_favorite);
+
+        if(mProduct.isFavorite())
+            mMenuFavorite.setIcon(R.drawable.ic_favorite);
 
         return true;
     }
@@ -205,6 +222,16 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         mProduct.setUser(true);
         mProduct.setDescription(description);
         mProduct.setImage(Constant.Image.DEFULT_IMAGE);
+    }
+
+
+    private void fillData(Bundle bundle) {
+        mEtProductTitle.setText(bundle.getString(Constant.Bundle.TITLE));
+        mEtProductPrice.setText(bundle.getString(Constant.Bundle.PRICE));
+        mEtProductDescription.setText(bundle.getString(Constant.Bundle.DESCRIPTION));
+        if(bundle.getBoolean(Constant.Bundle.FAVORITE)) {
+            mProduct.setFavorite(true);
+        }
     }
 
     // ===========================================================
