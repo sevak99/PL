@@ -1,11 +1,11 @@
 package com.abrahamyan.pl.ui.activity;
 
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,12 +13,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.ui.fragment.AboutFragment;
 import com.abrahamyan.pl.ui.fragment.BaseFragment;
 import com.abrahamyan.pl.ui.fragment.FavoriteProductsFragment;
 import com.abrahamyan.pl.ui.fragment.ProductListFragment;
+import com.abrahamyan.pl.util.Constant;
 import com.abrahamyan.pl.util.FragmentTransactionManager;
 import com.abrahamyan.pl.util.Preference;
 
@@ -62,6 +64,8 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
                 R.id.nav_product_list,
                 false
         );
+
+        catchNotificationData();
     }
 
     @Override
@@ -205,6 +209,20 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void catchNotificationData() {
+        String notifMessage = getIntent().getStringExtra(Constant.Extra.EXTRA_NOTIF_DATA);
+        int notifType = getIntent().getIntExtra(Constant.Extra.EXTRA_NOTIF_TYPE, -1);
+
+        switch (notifType) {
+            case Constant.NotifType.ADD:
+                Toast.makeText(this,"Added " + notifMessage, Toast.LENGTH_SHORT).show();
+                break;
+            case Constant.NotifType.UPDATE:
+                Toast.makeText(this,"Updated " + notifMessage, Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     // ===========================================================

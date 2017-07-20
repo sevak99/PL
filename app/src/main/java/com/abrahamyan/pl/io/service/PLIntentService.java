@@ -12,7 +12,6 @@ import com.abrahamyan.pl.io.bus.BusProvider;
 import com.abrahamyan.pl.io.bus.event.ApiEvent;
 import com.abrahamyan.pl.io.rest.HttpRequestManager;
 import com.abrahamyan.pl.io.rest.HttpResponseUtil;
-import com.abrahamyan.pl.util.Constant;
 import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
@@ -86,7 +85,7 @@ public class PLIntentService extends IntentService {
         String url = intent.getExtras().getString(Extra.URL);
         String data = intent.getExtras().getString(Extra.POST_ENTITY);
         int requestType = intent.getExtras().getInt(Extra.REQUEST_TYPE);
-        Log.i(LOG_TAG, requestType + Constant.Symbol.SPACE + url);
+        Log.i(LOG_TAG, requestType + " " + url);
         HttpURLConnection connection;
 
         switch (requestType) {

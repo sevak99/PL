@@ -25,7 +25,8 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
     // ===========================================================
 
     private static final String LOG_TAG = AboutFragment.class.getSimpleName();
-    public static final String URL = "http://aca.am/";
+//    public static final String URL = "http://aca.am/";
+    public static final String URL = "http://www.mywebpage.com";
 
     // ===========================================================
     // Fields
@@ -110,12 +111,12 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
     }
 
     private void setupWebView() {
-        mWv.setWebChromeClient(new CustomWebChromeClient());
-        mWv.setWebViewClient(new CustomWebViewClient());
-
         mWv.getSettings().setJavaScriptEnabled(true);
         mWv.getSettings().setBuiltInZoomControls(true);
         mWv.getSettings().setDisplayZoomControls(false);
+
+        mWv.setWebChromeClient(new CustomWebChromeClient());
+        mWv.setWebViewClient(new CustomWebViewClient());
     }
 
     private void loadUrl() {
@@ -154,6 +155,17 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if(url.contains(URL)) {
+                return false;
+            }
+
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity( intent );
+            return true;
         }
     }
 

@@ -114,7 +114,7 @@ public class ProductActivity extends BaseActivity
         if (mProduct.isUser()) {
             mMenuEdit.setVisible(true);
         }
-        if (mBundle != null) {
+        if (mBundle != null && mBundle.getString(Constant.Bundle.TITLE) != null) {
             mMenuDone.setVisible(true);
             mMenuEdit.setVisible(false);
         }
@@ -201,6 +201,14 @@ public class ProductActivity extends BaseActivity
 
     @Override
     public void onUpdateComplete(int token, Object cookie, int result) {
+        AppUtil.sendNotification(
+                getApplicationContext(),
+                MainActivity.class,
+                "PL App",
+                "Updated " + mProduct.getName(),
+                mProduct.getName(),
+                Constant.NotifType.UPDATE
+        );
     }
 
     @Override

@@ -1,12 +1,12 @@
 package com.abrahamyan.pl.ui.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.abrahamyan.pl.R;
@@ -93,7 +93,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private TextView tvProductPrice;
         private ImageView ivProductImage;
         private ImageView ivProductFavorite;
-        private LinearLayout llItemContainer;
+        private CardView cvItemContainer;
         private OnItemClickListener onItemClickListener;
         private Context context;
 
@@ -106,7 +106,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         }
 
         void findViews(View view) {
-            llItemContainer = (LinearLayout) view.findViewById(R.id.ll_product_item_container);
+            cvItemContainer = (CardView) view.findViewById(R.id.cv_product_item_container);
             tvProductTitle = (TextView) view.findViewById(R.id.tv_product_item_title);
             tvProductPrice = (TextView) view.findViewById(R.id.tv_product_item_price);
             ivProductImage = (ImageView) view.findViewById(R.id.iv_product_item_logo);
@@ -128,14 +128,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             else
                 ivProductFavorite.setVisibility(View.GONE);
 
-            llItemContainer.setOnClickListener(new View.OnClickListener() {
+            cvItemContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onItemClickListener.onItemClick(product);
                 }
             });
 
-            llItemContainer.setOnLongClickListener(new View.OnLongClickListener() {
+            cvItemContainer.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     onItemClickListener.onItemLongClick(product);

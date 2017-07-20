@@ -10,7 +10,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -47,6 +46,7 @@ public class ProductListFragment extends BaseFragment
     // ===========================================================
 
     private static final String LOG_TAG = ProductListFragment.class.getSimpleName();
+    public static final int ADD_PRODUCT_ACTIVITY = 1;
 
     // ===========================================================
     // Fields
@@ -127,7 +127,7 @@ public class ProductListFragment extends BaseFragment
         switch (v.getId()) {
             case R.id.fab_main_add_product:
                 Intent intent = new Intent(getActivity(), AddProductActivity.class);
-                startActivityForResult(intent, Constant.RequestCode.ADD_PRODUCT_ACTIVITY);
+                startActivityForResult(intent, ADD_PRODUCT_ACTIVITY);
                 break;
         }
     }
@@ -191,13 +191,11 @@ public class ProductListFragment extends BaseFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case Constant.RequestCode.ADD_PRODUCT_ACTIVITY:
-                    Product product = data.getParcelableExtra(Constant.Extra.EXTRA_PRODUCT);
-                    mErrorMsg.setVisibility(View.GONE);
-                    mProductArrayList.add(product);
-                    mRecyclerViewAdapter.notifyDataSetChanged();
-                    break;
+            if (requestCode == ADD_PRODUCT_ACTIVITY) {
+                Product product = data.getParcelableExtra(Constant.Extra.EXTRA_PRODUCT);
+                mErrorMsg.setVisibility(View.GONE);
+                mProductArrayList.add(product);
+                mRecyclerViewAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -259,7 +257,6 @@ public class ProductListFragment extends BaseFragment
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         mProductArrayList = new ArrayList<>();
         mRecyclerViewAdapter = new ProductAdapter(mProductArrayList, this);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);

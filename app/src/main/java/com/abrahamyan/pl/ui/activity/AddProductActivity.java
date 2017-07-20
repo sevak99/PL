@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.db.entity.Product;
 import com.abrahamyan.pl.db.handler.PlAsyncQueryHandler;
+import com.abrahamyan.pl.util.AppUtil;
 import com.abrahamyan.pl.util.Constant;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -171,6 +172,15 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         Intent intent = new Intent();
         intent.putExtra(Constant.Extra.EXTRA_PRODUCT, mProduct);
         setResult(RESULT_OK, intent);
+
+        AppUtil.sendNotification(
+                getApplicationContext(),
+                MainActivity.class,
+                "PL App",
+                "Added " + mProduct.getName(),
+                mProduct.getName(),
+                Constant.NotifType.ADD
+        );
         finish();
     }
 
