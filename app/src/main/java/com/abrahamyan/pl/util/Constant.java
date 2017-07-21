@@ -8,6 +8,7 @@ public class Constant {
 
     public class Argument {
         public static final String ARGUMENT_DATA = "ARGUMENT_DATA";
+        public static final String ARGUMENT_PRODUCT = "ARGUMENT_PRODUCT";
     }
 
     public class Extra {

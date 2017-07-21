@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +38,7 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
 
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
+    private int currentItem;
 
     // ===========================================================
     // Constructors
@@ -66,6 +66,12 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
         );
 
         catchNotificationData();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mNavigationView.getMenu().findItem(currentItem).setChecked(true);
     }
 
     @Override
@@ -128,6 +134,11 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
 
                 break;
 
+            case R.id.nav_product_vp:
+                Intent intent = new Intent(this, ProductListActivity.class);
+                startActivity(intent);
+                break;
+
             case R.id.nav_logout:
                 logout();
                 break;
@@ -143,10 +154,8 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_main_container);
-            Log.d(LOG_TAG, fragment.getClass().getSimpleName());
             if(!((BaseFragment) fragment).onBackPressed()) {
                 if(!(fragment instanceof ProductListFragment)) {
-                    mNavigationView.getMenu().findItem(R.id.nav_product_list).setChecked(true);
                     openScreen(
                             ProductListFragment.newInstance(),
                             R.id.nav_product_list,
@@ -191,6 +200,7 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
 
     private void openScreen(Fragment fragment, int item, boolean mustAddToBackStack) {
         mNavigationView.getMenu().findItem(item).setChecked(true);
+        currentItem = item;
 
         FragmentTransactionManager.displayFragment(
                 getSupportFragmentManager(),

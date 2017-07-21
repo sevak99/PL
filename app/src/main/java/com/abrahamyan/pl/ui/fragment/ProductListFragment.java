@@ -163,12 +163,11 @@ public class ProductListFragment extends BaseFragment
 
     @Subscribe
     public void onEventReceived(ApiEvent<Object> apiEvent) {
-        if (apiEvent.isSuccess()) {
-            mPlAsyncQueryHandler.getProducts();
-        } else {
+        if (!apiEvent.isSuccess()) {
             Toast.makeText(getActivity(), "Something went wrong, please try again",
                     Toast.LENGTH_SHORT).show();
         }
+        mPlAsyncQueryHandler.getProducts();
         mRefreshLayout.setRefreshing(false);
     }
 
@@ -205,7 +204,7 @@ public class ProductListFragment extends BaseFragment
         switch (token) {
             case PlAsyncQueryHandler.QueryToken.GET_PRODUCTS:
                 ArrayList<Product> products = CursorReader.parseProducts(cursor);
-                if (products != null && products.size() != 0) {
+                if (products.size() != 0) {
                     mErrorMsg.setVisibility(View.GONE);
                     mProductArrayList.clear();
                     mProductArrayList.addAll(products);

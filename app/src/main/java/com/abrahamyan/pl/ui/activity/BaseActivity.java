@@ -2,6 +2,7 @@ package com.abrahamyan.pl.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -28,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private TextView mTvToolbarTitle;
     private TextView mTvSubToolbarTitle;
     private Toolbar mToolbar;
+    private TabLayout mTabLayout;
 
     // ===========================================================
     // Constructors
@@ -69,10 +71,18 @@ public abstract class BaseActivity extends AppCompatActivity {
             mTvToolbarTitle = (TextView) mToolbar.findViewById(R.id.tv_toolbar_title);
             mTvSubToolbarTitle = (TextView) mToolbar.findViewById(R.id.tv_toolbar_subtitle);
         }
+
+        mTabLayout = (TabLayout) findViewById(R.id.ctl);
     }
 
     protected abstract int getLayoutResource();
 
+    @Nullable
+    protected TabLayout getTabLayout() {
+        return mTabLayout;
+    }
+
+    @Nullable
     protected Toolbar getToolBar() {
         return mToolbar;
     }

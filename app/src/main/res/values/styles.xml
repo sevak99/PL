@@ -18,4 +18,13 @@
         <item name="android:windowBackground">@drawable/layer_splash</item>
     </style>
 
+    <style name="TabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/colorPrimary</item>
+        <item name="tabTextAppearance">@style/TabLayout.TextAppearance</item>
+    </style>
+
+    <style name="TabLayout.TextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">true</item>
+    </style>
+
 </resources>

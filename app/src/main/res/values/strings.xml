@@ -16,7 +16,8 @@
     <!--Navigation drawer menu items-->
     <string name="text_product_list">Product List</string>
     <string name="text_about">About</string>
-    <string name="text_favorite_products">Favorite Products</string>
+    <string name="text_favorite_products">Favorites</string>
+    <string name="text_product_wp">Product wp</string>
     <string name="text_logout">Logout</string>
     <!--Dialog-->
     <string name="cancel">Cancel</string>

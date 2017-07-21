@@ -25,8 +25,7 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
     // ===========================================================
 
     private static final String LOG_TAG = AboutFragment.class.getSimpleName();
-//    public static final String URL = "http://aca.am/";
-    public static final String URL = "http://www.mywebpage.com";
+    public static final String URL = "http://aca.am/";
 
     // ===========================================================
     // Fields

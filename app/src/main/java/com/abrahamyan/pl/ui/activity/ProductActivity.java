@@ -182,12 +182,14 @@ public class ProductActivity extends BaseActivity
 
     @Subscribe
     public void onEventReceived(ApiEvent<Object> apiEvent) {
-        if (apiEvent.isSuccess()) {
-            mProduct = (Product) apiEvent.getEventData();
-            openViewLayout(mProduct);
-        } else {
-            Toast.makeText(this, "Something went wrong, please try again",
-                    Toast.LENGTH_SHORT).show();
+        if(apiEvent.getEventType() == ApiEvent.EventType.PRODUCT_ITEM_LOADED) {
+            if (apiEvent.isSuccess()) {
+                mProduct = (Product) apiEvent.getEventData();
+                openViewLayout(mProduct);
+            } else {
+                Toast.makeText(this, "Something went wrong, please try again",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
