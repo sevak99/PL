@@ -24,7 +24,7 @@ public class PlProvider extends ContentProvider {
 
     private static final String LOG_TAG = PlProvider.class.getSimpleName();
 
-    public static final String AUTHORITY = BuildConfig.APPLICATION_ID; //? android:authorities == AUTHORITY
+    public static final String AUTHORITY = BuildConfig.APPLICATION_ID;
 
     public class Path {
         static final String PRODUCT_LOCATION = PlDataBase.PRODUCT_TABLE;
@@ -67,11 +67,11 @@ public class PlProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mDataBaseHelper = new PlDataBaseHelper(getContext());
-        return false;                                                   //? return true
+        return false;
     }
 
     @Override
-    public String getType(@NonNull Uri uri) {                           // ?
+    public String getType(@NonNull Uri uri) {
         switch (sUriMatcher.match(uri)) {
             case Code.ALL_PRODUCTS:
                 return ContentType.ALL_PRODUCTS;
@@ -100,7 +100,7 @@ public class PlProvider extends ContentProvider {
                 id = db.insertWithOnConflict(PlDataBase.PRODUCT_TABLE, null, values,
                         SQLiteDatabase.CONFLICT_IGNORE);
                 contentUri = ContentUris.withAppendedId(UriBuilder.buildProductUri(), id);
-//                contentUri = UriBuilder.buildProductUri(id);    ?
+//                contentUri = UriBuilder.buildProductUri(id);
                 break;
 
             default:

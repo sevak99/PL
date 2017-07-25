@@ -182,13 +182,12 @@ public class ProductActivity extends BaseActivity
 
     @Subscribe
     public void onEventReceived(ApiEvent<Object> apiEvent) {
-        if(apiEvent.getEventType() == ApiEvent.EventType.PRODUCT_ITEM_LOADED) {
+        if (apiEvent.getEventType() == ApiEvent.EventType.PRODUCT_ITEM_LOADED) {
             if (apiEvent.isSuccess()) {
                 mProduct = (Product) apiEvent.getEventData();
                 openViewLayout(mProduct);
             } else {
-                Toast.makeText(this, "Something went wrong, please try again",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.msg_error, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -207,7 +206,7 @@ public class ProductActivity extends BaseActivity
                 getApplicationContext(),
                 MainActivity.class,
                 "PL App",
-                "Updated " + mProduct.getName(),
+                getString(R.string.notif_update) + " " + mProduct.getName(),
                 mProduct.getName(),
                 Constant.NotifType.UPDATE
         );
@@ -251,7 +250,7 @@ public class ProductActivity extends BaseActivity
 
         mBundle = bundle;
 
-        if(mBundle != null) {
+        if (mBundle != null) {
             Product product = new Product();
             product.setName(mBundle.getString(Constant.Bundle.TITLE));
             product.setDescription(mBundle.getString(Constant.Bundle.DESCRIPTION));
@@ -275,6 +274,12 @@ public class ProductActivity extends BaseActivity
     }
 
     private void updateProduct(String name, long price, String description) {
+        if(name.equals(mProduct.getName()) &&
+                price == mProduct.getPrice() &&
+                description.equals(mProduct.getDescription())) {
+
+            return;
+        }
         mProduct.setName(name);
         mProduct.setPrice(price);
         mProduct.setDescription(description);

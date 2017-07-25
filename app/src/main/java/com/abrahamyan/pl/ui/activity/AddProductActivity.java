@@ -67,7 +67,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         setListeners();
         customizeActionBar();
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             fillData(savedInstanceState);
         }
     }
@@ -92,7 +92,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         getMenuInflater().inflate(R.menu.menu_product_item, menu);
         mMenuFavorite = menu.findItem(R.id.menu_product_favorite);
 
-        if(mProduct.isFavorite())
+        if (mProduct.isFavorite())
             mMenuFavorite.setIcon(R.drawable.ic_favorite);
 
         return true;
@@ -177,7 +177,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
                 getApplicationContext(),
                 MainActivity.class,
                 "PL App",
-                "Added " + mProduct.getName(),
+                getString(R.string.notif_add) + " " + mProduct.getName(),
                 mProduct.getName(),
                 Constant.NotifType.ADD
         );
@@ -239,7 +239,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         mEtProductTitle.setText(bundle.getString(Constant.Bundle.TITLE));
         mEtProductPrice.setText(bundle.getString(Constant.Bundle.PRICE));
         mEtProductDescription.setText(bundle.getString(Constant.Bundle.DESCRIPTION));
-        if(bundle.getBoolean(Constant.Bundle.FAVORITE)) {
+        if (bundle.getBoolean(Constant.Bundle.FAVORITE)) {
             mProduct.setFavorite(true);
         }
     }

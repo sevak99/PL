@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abrahamyan.pl.R;
 import com.abrahamyan.pl.db.entity.Product;
@@ -109,13 +110,15 @@ public class ProductFragment extends BaseFragment implements View.OnClickListene
 
     @Subscribe
     public void onEventReceived(ApiEvent<Object> apiEvent) {
-        switch (apiEvent.getEventType()) {
-            case ApiEvent.EventType.PRODUCT_ITEM_LOADED:
+        if (apiEvent.getEventType() == ApiEvent.EventType.PRODUCT_ITEM_LOADED) {
+            if (apiEvent.isSuccess()) {
                 Product product = (Product) apiEvent.getEventData();
                 if (mProduct.getId() == product.getId()) {
                     updateDescription((Product) apiEvent.getEventData());
                 }
-                break;
+            } else {
+                Toast.makeText(getActivity(), R.string.msg_error, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

@@ -120,14 +120,11 @@ public class ProductListActivity extends BaseActivity implements View.OnClickLis
 
     @Subscribe
     public void onEventReceived(ApiEvent<Object> apiEvent) {
-        switch (apiEvent.getEventType()) {
-            case ApiEvent.EventType.PRODUCT_LIST_LOADED:
-                if (!apiEvent.isSuccess()) {
-                    Toast.makeText(this, "Something went wrong, please try again",
-                            Toast.LENGTH_SHORT).show();
-                }
-                mPlAsyncQueryHandler.getProducts();
-                break;
+        if (apiEvent.getEventType() == ApiEvent.EventType.PRODUCT_LIST_LOADED) {
+            if (!apiEvent.isSuccess()) {
+                Toast.makeText(this, R.string.msg_error, Toast.LENGTH_SHORT).show();
+            }
+            mPlAsyncQueryHandler.getProducts();
         }
 
     }

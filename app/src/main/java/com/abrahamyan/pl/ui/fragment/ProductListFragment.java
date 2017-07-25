@@ -164,8 +164,7 @@ public class ProductListFragment extends BaseFragment
     @Subscribe
     public void onEventReceived(ApiEvent<Object> apiEvent) {
         if (!apiEvent.isSuccess()) {
-            Toast.makeText(getActivity(), "Something went wrong, please try again",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.msg_error, Toast.LENGTH_SHORT).show();
         }
         mPlAsyncQueryHandler.getProducts();
         mRefreshLayout.setRefreshing(false);

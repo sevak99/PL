@@ -48,7 +48,7 @@
                         android:id="@+id/et_add_product_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Title"
+                        android:hint="@string/title"
                         android:textColor="@android:color/black" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -60,7 +60,7 @@
                         android:id="@+id/et_add_product_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Price"
+                        android:hint="@string/price"
                         android:inputType="number"
                         android:maxLength="18"
                         android:textColor="@android:color/black" />
@@ -74,7 +74,7 @@
                         android:id="@+id/et_add_product_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Description" />
+                        android:hint="@string/desc" />
                 </android.support.design.widget.TextInputLayout>
 
 
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background="@android:color/holo_green_dark"
-            android:text="Add"
+            android:text="@string/add"
             android:textColor="@android:color/white"
             android:textAppearance="?android:textAppearanceLarge">
 

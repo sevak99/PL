@@ -98,7 +98,7 @@ public class PLIntentService extends IntentService {
 
                 String jsonList = HttpResponseUtil.parseResponse(connection);
 
-                Log.d(LOG_TAG, jsonList);
+//                Log.d(LOG_TAG, jsonList);
                 ProductResponse productResponse = (new Gson()).fromJson(jsonList, ProductResponse.class);
 
                 if (productResponse != null) {
@@ -128,7 +128,7 @@ public class PLIntentService extends IntentService {
                 String jsonItem = HttpResponseUtil.parseResponse(connection);
 
 
-                Log.d(LOG_TAG, jsonItem);
+//                Log.d(LOG_TAG, jsonItem);
                 Product product = (new Gson()).fromJson(jsonItem, Product.class);
 
                 if (product != null) {
