@@ -36,6 +36,7 @@ import com.google.common.eventbus.Subscribe;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
+import static com.abrahamyan.pl.util.Constant.RequestCode.ADD_PRODUCT_ACTIVITY;
 
 public class ProductListFragment extends BaseFragment
         implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener,
@@ -46,7 +47,6 @@ public class ProductListFragment extends BaseFragment
     // ===========================================================
 
     private static final String LOG_TAG = ProductListFragment.class.getSimpleName();
-    public static final int ADD_PRODUCT_ACTIVITY = 1;
 
     // ===========================================================
     // Fields
@@ -189,7 +189,7 @@ public class ProductListFragment extends BaseFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == ADD_PRODUCT_ACTIVITY) {
+            if (requestCode == Constant.RequestCode.ADD_PRODUCT_ACTIVITY) {
                 Product product = data.getParcelableExtra(Constant.Extra.EXTRA_PRODUCT);
                 mErrorMsg.setVisibility(View.GONE);
                 mProductArrayList.add(product);

@@ -53,4 +53,9 @@ public class Constant {
     public class Image {
         public static final String DEFULT_IMAGE = "https://s3-eu-west-1.amazonaws.com/developer-application-test/images/3.jpg";
     }
+
+    public class RequestCode {
+        public static final int ADD_PRODUCT_ACTIVITY = 100;
+        public static final int CAMERA = 101;
+    }
 }

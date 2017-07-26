@@ -1,13 +1,18 @@
 package com.abrahamyan.pl.ui.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +43,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     // Fields
     // ===========================================================
 
+    private boolean useCamera = true;
     private EditText mEtProductTitle;
     private EditText mEtProductPrice;
     private EditText mEtProductDescription;
@@ -98,6 +104,35 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         return true;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == Constant.RequestCode.CAMERA) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                useCamera = false;
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case Constant.RequestCode.CAMERA:
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    mIvProductImage.setImageBitmap(photo);
+                    break;
+            }
+        }
+    }
+
     // ===========================================================
     // Click Listeners
     // ===========================================================
@@ -134,10 +169,23 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
                 dialog.show();
 
                 break;
+
+            case R.id.iv_add_product_logo:
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA},
+                                Constant.RequestCode.CAMERA);
+                    }
+                }
+                if(useCamera) {
+                    openCamera();
+                }
+                break;
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -200,6 +248,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
 
     private void setListeners() {
         mBtnProductAdd.setOnClickListener(this);
+        mIvProductImage.setOnClickListener(this);
     }
 
     private void findViews() {
@@ -242,6 +291,11 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         if (bundle.getBoolean(Constant.Bundle.FAVORITE)) {
             mProduct.setFavorite(true);
         }
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, Constant.RequestCode.CAMERA);
     }
 
     // ===========================================================

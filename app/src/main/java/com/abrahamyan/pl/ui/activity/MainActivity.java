@@ -227,10 +227,10 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
 
         switch (notifType) {
             case Constant.NotifType.ADD:
-                Toast.makeText(this,R.string.notif_add + notifMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,getString(R.string.notif_add) + " " + notifMessage, Toast.LENGTH_SHORT).show();
                 break;
             case Constant.NotifType.UPDATE:
-                Toast.makeText(this,R.string.notif_update + notifMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,getString(R.string.notif_update) + " " + notifMessage, Toast.LENGTH_SHORT).show();
                 break;
         }
     }
