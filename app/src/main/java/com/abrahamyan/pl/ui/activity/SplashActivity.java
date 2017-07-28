@@ -35,7 +35,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(Preference.getInstance(this).getUserMail() != null) {
+        if (Preference.getInstance(this).getUserMail() != null) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

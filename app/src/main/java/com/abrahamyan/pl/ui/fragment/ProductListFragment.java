@@ -83,12 +83,6 @@ public class ProductListFragment extends BaseFragment
     // Methods for/from SuperClass
     // ===========================================================
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -107,15 +101,9 @@ public class ProductListFragment extends BaseFragment
     }
 
     @Override
-    public void onResume() {
+    public void onStart() {
+        super.onStart();
         mPlAsyncQueryHandler.getProducts();
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroyView() {
-        BusProvider.unregister(this);
-        super.onDestroyView();
     }
 
     // ===========================================================
@@ -125,7 +113,7 @@ public class ProductListFragment extends BaseFragment
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.fab_main_add_product:
+            case R.id.fab_product_list_fr_add_product:
                 Intent intent = new Intent(getActivity(), AddProductActivity.class);
                 startActivityForResult(intent, ADD_PRODUCT_ACTIVITY);
                 break;
@@ -142,8 +130,8 @@ public class ProductListFragment extends BaseFragment
     @Override
     public void onItemLongClick(final Product product) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setMessage(R.string.msg_delete_product)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                .setMessage(R.string.msg_dialog_delete_product)
+                .setPositiveButton(R.string.text_btn_dialog_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mPlAsyncQueryHandler.deleteProduct(product);
@@ -151,7 +139,7 @@ public class ProductListFragment extends BaseFragment
                         mRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 })
-                .setNegativeButton(R.string.cancel, null);
+                .setNegativeButton(R.string.text_btn_dialog_cancel, null);
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -164,7 +152,7 @@ public class ProductListFragment extends BaseFragment
     @Subscribe
     public void onEventReceived(ApiEvent<Object> apiEvent) {
         if (!apiEvent.isSuccess()) {
-            Toast.makeText(getActivity(), R.string.msg_error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.msg_some_error, Toast.LENGTH_SHORT).show();
         }
         mPlAsyncQueryHandler.getProducts();
         mRefreshLayout.setRefreshing(false);
@@ -189,11 +177,12 @@ public class ProductListFragment extends BaseFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == Constant.RequestCode.ADD_PRODUCT_ACTIVITY) {
-                Product product = data.getParcelableExtra(Constant.Extra.EXTRA_PRODUCT);
-                mErrorMsg.setVisibility(View.GONE);
-                mProductArrayList.add(product);
-                mRecyclerViewAdapter.notifyDataSetChanged();
+            switch (requestCode) {
+                case Constant.RequestCode.ADD_PRODUCT_ACTIVITY:
+                    Product product = data.getParcelableExtra(Constant.Extra.EXTRA_PRODUCT);
+                    mErrorMsg.setVisibility(View.GONE);
+                    mProductArrayList.add(product);
+                    mRecyclerViewAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -220,17 +209,14 @@ public class ProductListFragment extends BaseFragment
 
     @Override
     public void onInsertComplete(int token, Object cookie, Uri uri) {
-
     }
 
     @Override
     public void onUpdateComplete(int token, Object cookie, int result) {
-
     }
 
     @Override
     public void onDeleteComplete(int token, Object cookie, int result) {
-
     }
 
     // ===========================================================
@@ -243,10 +229,10 @@ public class ProductListFragment extends BaseFragment
     }
 
     private void findViews(View view) {
-        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_product_list);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_product_list);
-        mErrorMsg = (TextView) view.findViewById(R.id.tv_product_list);
-        mFabAddProduct = (FloatingActionButton) view.findViewById(R.id.fab_main_add_product);
+        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_product_list_fr);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_product_list_fr);
+        mErrorMsg = (TextView) view.findViewById(R.id.tv_product_list_fr_error_msg);
+        mFabAddProduct = (FloatingActionButton) view.findViewById(R.id.fab_product_list_fr_add_product);
     }
 
     private void init() {
@@ -259,7 +245,6 @@ public class ProductListFragment extends BaseFragment
         mRecyclerViewAdapter = new ProductAdapter(mProductArrayList, this);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
     }
-
 
     public void getData() {
         if (getArguments() != null) {

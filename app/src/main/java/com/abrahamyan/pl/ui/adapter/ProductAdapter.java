@@ -70,7 +70,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-
     // ===========================================================
     // Other Listeners, methods for/from Interfaces
     // ===========================================================
@@ -97,7 +96,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private OnItemClickListener onItemClickListener;
         private Context context;
 
-
         public ProductViewHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             this.context = itemView.getContext();
@@ -114,7 +112,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         }
 
         void bindData(final Product product) {
-
             Glide.with(context)
                     .load(product.getImage())
                     .placeholder(R.drawable.ic_get_app_black_24dp)
@@ -146,10 +143,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     public interface OnItemClickListener {
-
         void onItemClick(Product product);
-
         void onItemLongClick(Product product);
-
     }
 }

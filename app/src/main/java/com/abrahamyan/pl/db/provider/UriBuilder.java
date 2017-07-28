@@ -13,5 +13,4 @@ public class UriBuilder {
         return Uri.parse("content://" + PlProvider.AUTHORITY + "/"
                 + PlProvider.Path.PRODUCT_LOCATION);
     }
-
 }

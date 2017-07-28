@@ -52,12 +52,6 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        BusProvider.unregister(this);
-    }
-
-    @Override
     protected int getLayoutResource() {
         return R.layout.activity_auth;
     }
@@ -134,7 +128,6 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-
         }
     }
 

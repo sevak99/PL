@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.abrahamyan.pl.BuildConfig;
 import com.abrahamyan.pl.db.PlDataBase;
@@ -90,13 +89,8 @@ public class PlProvider extends ContentProvider {
         SQLiteDatabase db = mDataBaseHelper.getWritableDatabase();
         long id;
 
-        Log.d(LOG_TAG, "insert");
-        Log.d(LOG_TAG, uri.toString());
-
         switch (sUriMatcher.match(uri)) {
             case Code.ALL_PRODUCTS:
-                Log.d(LOG_TAG, "ALL_PRODUCTS");
-
                 id = db.insertWithOnConflict(PlDataBase.PRODUCT_TABLE, null, values,
                         SQLiteDatabase.CONFLICT_IGNORE);
                 contentUri = ContentUris.withAppendedId(UriBuilder.buildProductUri(), id);
@@ -107,8 +101,6 @@ public class PlProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unsupported URI: " + uri.toString());
         }
 
-        Log.d(LOG_TAG, String.valueOf(id));
-        Log.d(LOG_TAG, contentUri.toString());
         return contentUri;
     }
 
@@ -119,22 +111,17 @@ public class PlProvider extends ContentProvider {
         SQLiteDatabase db = mDataBaseHelper.getWritableDatabase();
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
-        Log.d(LOG_TAG, "query");
-        Log.d(LOG_TAG, uri.toString());
-
         switch (sUriMatcher.match(uri)) {
             case Code.ALL_PRODUCTS:
-                Log.d(LOG_TAG, "ALL_PRODUCTS");
 //                cursor = db.query(PlDataBase.PRODUCT_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
                 queryBuilder.setTables(PlDataBase.PRODUCT_TABLE);
                 cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
             case Code.SINGLE_PRODUCT:
-                Log.d(LOG_TAG, "SINGLE_PRODUCT");
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    selection = PlDataBase.PRODUCT_ID + " = " + id;
+                    selection = PlDataBase.PRODUCT_ID + "=" + id;
                 } else {
                     selection = selection + " AND " + PlDataBase.PRODUCT_ID + "=" + id;
                 }
@@ -154,20 +141,15 @@ public class PlProvider extends ContentProvider {
         int deleteCount;
         SQLiteDatabase db = mDataBaseHelper.getWritableDatabase();
 
-        Log.d(LOG_TAG, "delete");
-        Log.d(LOG_TAG, uri.toString());
-
         switch (sUriMatcher.match(uri)) {
             case Code.ALL_PRODUCTS:
-                Log.d(LOG_TAG, "ALL_PRODUCTS");
                 deleteCount = db.delete(PlDataBase.PRODUCT_TABLE, selection, selectionArgs);
                 break;
 
             case Code.SINGLE_PRODUCT:
-                Log.d(LOG_TAG, "SINGLE_PRODUCT");
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    selection = PlDataBase.PRODUCT_ID + " = " + id;
+                    selection = PlDataBase.PRODUCT_ID + "=" + id;
                 } else {
                     selection = selection + " AND " + PlDataBase.PRODUCT_ID + "=" + id;
                 }
@@ -185,20 +167,15 @@ public class PlProvider extends ContentProvider {
         int updateCount;
         SQLiteDatabase db = mDataBaseHelper.getWritableDatabase();
 
-        Log.d(LOG_TAG, "update");
-        Log.d(LOG_TAG, uri.toString());
-
         switch (sUriMatcher.match(uri)) {
             case Code.ALL_PRODUCTS:
-                Log.d(LOG_TAG, "ALL_PRODUCTS");
                 updateCount = db.update(PlDataBase.PRODUCT_TABLE, values, selection, selectionArgs);
                 break;
 
             case Code.SINGLE_PRODUCT:
-                Log.d(LOG_TAG, "SINGLE_PRODUCT");
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    selection = PlDataBase.PRODUCT_ID + " = " + id;
+                    selection = PlDataBase.PRODUCT_ID + "=" + id;
                 } else {
                     selection = selection + " AND " + PlDataBase.PRODUCT_ID + "=" + id;
                 }
@@ -231,5 +208,4 @@ public class PlProvider extends ContentProvider {
     // ===========================================================
     // Inner and Anonymous Classes
     // ===========================================================
-
 }

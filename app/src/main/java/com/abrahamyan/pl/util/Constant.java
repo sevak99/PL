@@ -12,7 +12,6 @@ public class Constant {
     }
 
     public class Extra {
-        public static final String EXTRA_USER = "EXTRA_USER";
         public static final String EXTRA_PRODUCT = "EXTRA_PRODUCT";
         public static final String EXTRA_NOTIF_DATA = "EXTRA_NOTIF_DATA";
         public static final String EXTRA_NOTIF_TYPE = "EXTRA_NOTIF_TYPE";
@@ -39,6 +38,8 @@ public class Constant {
         public static final String PRODUCT_LIST = HOST + "/aca_pl/products.json";
         public static final String PRODUCT_ITEM = HOST + "/aca_pl/products/"; // id
         public static final String PRODUCT_ITEM_POSTFIX = "/details.json";
+        public static final String DEFULT_IMAGE = "https://s3-eu-west-1.amazonaws.com/developer-application-test/images/3.jpg";
+        public static final String URL_ACA = "http://aca.am/";
     }
 
     public class Json {
@@ -48,10 +49,6 @@ public class Constant {
         public static final String PRICE = "price";
         public static final String IMAGE = "image";
         public static final String DESCRIPTION = "description";
-    }
-
-    public class Image {
-        public static final String DEFULT_IMAGE = "https://s3-eu-west-1.amazonaws.com/developer-application-test/images/3.jpg";
     }
 
     public class RequestCode {

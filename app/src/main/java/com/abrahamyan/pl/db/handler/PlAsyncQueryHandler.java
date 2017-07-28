@@ -4,7 +4,6 @@ import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 import com.abrahamyan.pl.db.PlDataBase;
 import com.abrahamyan.pl.db.entity.Product;
@@ -165,8 +164,6 @@ public class PlAsyncQueryHandler extends AsyncQueryHandler {
     }
 
     public synchronized void updateProduct(Product product) {
-        Log.d(LOG_TAG, String.valueOf(product.getId()));
-        Log.d(LOG_TAG, String.valueOf(UriBuilder.buildProductUri(product.getId())));
         startUpdate(
                 QueryToken.UPDATE_PRODUCT,
                 null,

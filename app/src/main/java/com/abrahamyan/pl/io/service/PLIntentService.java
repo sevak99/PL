@@ -98,23 +98,20 @@ public class PLIntentService extends IntentService {
 
                 String jsonList = HttpResponseUtil.parseResponse(connection);
 
-//                Log.d(LOG_TAG, jsonList);
                 ProductResponse productResponse = (new Gson()).fromJson(jsonList, ProductResponse.class);
 
                 if (productResponse != null) {
 
                     ArrayList<Product> products = productResponse.getProducts();
 
-                    PlQueryHandler.updateProducts(this, products);
+                    PlQueryHandler.updateProductsExceptFavorite(this, products);
                     PlQueryHandler.addProducts(this, products);
 
                     BusProvider.getInstance().post(new ApiEvent<>(ApiEvent.EventType.PRODUCT_LIST_LOADED, true));
 
                 } else {
                     BusProvider.getInstance().post(new ApiEvent<>(ApiEvent.EventType.PRODUCT_LIST_LOADED, false));
-
                 }
-
 
                 break;
 
@@ -127,8 +124,6 @@ public class PLIntentService extends IntentService {
 
                 String jsonItem = HttpResponseUtil.parseResponse(connection);
 
-
-//                Log.d(LOG_TAG, jsonItem);
                 Product product = (new Gson()).fromJson(jsonItem, Product.class);
 
                 if (product != null) {
@@ -137,12 +132,10 @@ public class PLIntentService extends IntentService {
                     BusProvider.getInstance().post(new ApiEvent<>(ApiEvent.EventType.PRODUCT_ITEM_LOADED, true, product));
                 } else {
                     BusProvider.getInstance().post(new ApiEvent<>(ApiEvent.EventType.PRODUCT_ITEM_LOADED, false));
-
                 }
 
                 break;
         }
-
     }
 
     // ===========================================================

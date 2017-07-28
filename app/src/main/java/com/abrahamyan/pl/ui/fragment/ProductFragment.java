@@ -2,7 +2,6 @@ package com.abrahamyan.pl.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,12 +60,6 @@ public class ProductFragment extends BaseFragment implements View.OnClickListene
     // Methods for/from SuperClass
     // ===========================================================
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -81,15 +74,8 @@ public class ProductFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        BusProvider.unregister(this);
-    }
-
-    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.d(LOG_TAG, "isVisibleToUser - " + isVisibleToUser);
         if (isVisibleToUser) {
         }
     }
@@ -117,7 +103,7 @@ public class ProductFragment extends BaseFragment implements View.OnClickListene
                     updateDescription((Product) apiEvent.getEventData());
                 }
             } else {
-                Toast.makeText(getActivity(), R.string.msg_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.msg_some_error, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -127,7 +113,6 @@ public class ProductFragment extends BaseFragment implements View.OnClickListene
     // ===========================================================
 
     private void setListeners() {
-
     }
 
     private void findViews(View view) {

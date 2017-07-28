@@ -5,19 +5,19 @@
     android:clickable="true"
     android:animateLayoutChanges="true">
 
-
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_favorite_products"
+        android:id="@+id/rv_fv_products"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
-        android:id="@+id/tv_favorite_products"
+        android:id="@+id/tv_fv_products"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@android:color/black"
         android:textAppearance="?android:textAppearanceLarge"
+        android:text="@string/msg_no_favorites"
         android:visibility="gone"/>
 
 </RelativeLayout>

@@ -82,6 +82,17 @@ public class PlQueryHandler {
         for (Product product : products) {
             context.getContentResolver().update(
                     UriBuilder.buildProductUri(product.getId()),
+                    PlDataBase.composeValues(product, PlDataBase.ContentValuesType.PRODUCTS),
+                    null,
+                    null
+            );
+        }
+    }
+
+    public synchronized static void updateProductsExceptFavorite(Context context, ArrayList<Product> products) {
+        for (Product product : products) {
+            context.getContentResolver().update(
+                    UriBuilder.buildProductUri(product.getId()),
                     PlDataBase.composeValues(product, PlDataBase.ContentValuesType.ALL_EXCEPT_FAVORITE),
                     null,
                     null

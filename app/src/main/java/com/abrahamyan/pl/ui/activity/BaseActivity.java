@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.abrahamyan.pl.R;
+import com.abrahamyan.pl.io.bus.BusProvider;
 
 /**
  * Created by SEVAK on 22.06.2017.
@@ -55,6 +56,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BusProvider.unregister(this);
     }
 
     // ===========================================================

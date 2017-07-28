@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include
-            layout="@layout/include_toolbar"/>
+        <include layout="@layout/include_toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:fillViewport="true">
 
-        <ScrollView
-            android:id="@+id/sv_add_product"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:orientation="vertical"
                 android:padding="10dp">
 
@@ -37,19 +34,20 @@
                     android:id="@+id/iv_add_product_logo"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    android:background="@android:color/darker_gray"/>
+                    android:background="@android:color/darker_gray"
+                    android:scaleType="centerCrop" />
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <EditText
-                        android:id="@+id/et_add_product_title"
+                        android:id="@+id/edt_add_product_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/title"
+                        android:hint="@string/hint_edt_add_product_title"
                         android:textColor="@android:color/black" />
+
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -60,10 +58,11 @@
                         android:id="@+id/et_add_product_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/price"
+                        android:hint="@string/hint_edt_add_product_price"
                         android:inputType="number"
                         android:maxLength="18"
                         android:textColor="@android:color/black" />
+
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -74,27 +73,25 @@
                         android:id="@+id/et_add_product_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/desc" />
-                </android.support.design.widget.TextInputLayout>
+                        android:hint="@string/hint_edt_add_product_desc"
+                        android:textColor="@android:color/black" />
 
+                </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btn_add_product_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@android:color/holo_green_dark"
+                android:text="@string/text_btn_add_product_add"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textColor="@android:color/white" />
 
-        </ScrollView>
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_add_product_add"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@android:color/holo_green_dark"
-            android:text="@string/add"
-            android:textColor="@android:color/white"
-            android:textAppearance="?android:textAppearanceLarge">
-
-        </Button>
-
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

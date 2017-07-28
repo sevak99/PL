@@ -84,19 +84,12 @@ public class ProductActivity extends BaseActivity
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
         if (mMenuDone.isVisible()) {
             savedInstanceState.putString(Constant.Bundle.TITLE, mEtProductTitle.getText().toString());
             savedInstanceState.putString(Constant.Bundle.PRICE, mEtProductPrice.getText().toString());
             savedInstanceState.putString(Constant.Bundle.DESCRIPTION, mEtProductDescription.getText().toString());
         }
-
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onDestroy() {
-        BusProvider.unregister(this);
-        super.onDestroy();
     }
 
     @Override
@@ -131,7 +124,6 @@ public class ProductActivity extends BaseActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
             case android.R.id.home:
                 finish();
                 return true;
@@ -162,7 +154,7 @@ public class ProductActivity extends BaseActivity
 
             case R.id.menu_product_favorite:
                 if (mProduct.isFavorite()) {
-                    mMenuFavorite.setIcon(R.drawable.ic_not_favorite);
+                    mMenuFavorite.setIcon(R.drawable.ic_unfavorite);
                     mProduct.setFavorite(false);
                 } else {
                     mMenuFavorite.setIcon(R.drawable.ic_favorite);
@@ -171,7 +163,6 @@ public class ProductActivity extends BaseActivity
                 mPlAsyncQueryHandler.updateProduct(mProduct);
 
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -187,7 +178,7 @@ public class ProductActivity extends BaseActivity
                 mProduct = (Product) apiEvent.getEventData();
                 openViewLayout(mProduct);
             } else {
-                Toast.makeText(this, R.string.msg_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.msg_some_error, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -205,7 +196,7 @@ public class ProductActivity extends BaseActivity
         AppUtil.sendNotification(
                 getApplicationContext(),
                 MainActivity.class,
-                "PL App",
+                getString(R.string.app_name),
                 getString(R.string.notif_update) + " " + mProduct.getName(),
                 mProduct.getName(),
                 Constant.NotifType.UPDATE
@@ -231,9 +222,9 @@ public class ProductActivity extends BaseActivity
         mTvProductPrice = (TextView) findViewById(R.id.tv_product_price);
         mTvProductDescription = (TextView) findViewById(R.id.tv_product_description);
         mLlProductEdit = (LinearLayout) findViewById(R.id.ll_product_editable);
-        mEtProductTitle = (EditText) findViewById(R.id.ev_product_title);
-        mEtProductPrice = (EditText) findViewById(R.id.ev_product_price);
-        mEtProductDescription = (EditText) findViewById(R.id.ev_product_description);
+        mEtProductTitle = (EditText) findViewById(R.id.edt_product_title);
+        mEtProductPrice = (EditText) findViewById(R.id.edt_product_price);
+        mEtProductDescription = (EditText) findViewById(R.id.edt_product_description);
     }
 
     private void customizeActionBar() {
@@ -250,7 +241,7 @@ public class ProductActivity extends BaseActivity
 
         mBundle = bundle;
 
-        if (mBundle != null) {
+        if (mBundle != null && mBundle.getString(Constant.Bundle.TITLE) != null) {
             Product product = new Product();
             product.setName(mBundle.getString(Constant.Bundle.TITLE));
             product.setDescription(mBundle.getString(Constant.Bundle.DESCRIPTION));
@@ -269,7 +260,6 @@ public class ProductActivity extends BaseActivity
                     Constant.API.PRODUCT_ITEM + mProduct.getId() + Constant.API.PRODUCT_ITEM_POSTFIX,
                     HttpRequestManager.RequestType.PRODUCT_ITEM
             );
-
         }
     }
 
@@ -277,7 +267,6 @@ public class ProductActivity extends BaseActivity
         if(name.equals(mProduct.getName()) &&
                 price == mProduct.getPrice() &&
                 description.equals(mProduct.getDescription())) {
-
             return;
         }
         mProduct.setName(name);

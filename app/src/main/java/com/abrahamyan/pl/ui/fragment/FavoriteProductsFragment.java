@@ -67,12 +67,6 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
     // Methods for/from SuperClass
     // ===========================================================
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -84,15 +78,13 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
         getData();
         customizeActionBar();
 
-        mPlAsyncQueryHandler.getFavoriteProducts();
-
         return view;
     }
 
     @Override
-    public void onResume() {
+    public void onStart() {
+        super.onStart();
         mPlAsyncQueryHandler.getFavoriteProducts();
-        super.onResume();
     }
 
     // ===========================================================
@@ -115,8 +107,8 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
     @Override
     public void onItemLongClick(final Product product) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setMessage(R.string.msg_delete_product)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                .setMessage(R.string.msg_dialog_delete_product)
+                .setPositiveButton(R.string.text_btn_dialog_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mPlAsyncQueryHandler.deleteProduct(product);
@@ -124,7 +116,7 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
                         mRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 })
-                .setNegativeButton(R.string.cancel, null);
+                .setNegativeButton(R.string.text_btn_dialog_cancel, null);
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -139,7 +131,7 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
         switch (token) {
             case PlAsyncQueryHandler.QueryToken.GET_FAVORITE_PRODUCTS:
                 ArrayList<Product> favoriteProducts = CursorReader.parseProducts(cursor);
-                if (favoriteProducts != null && favoriteProducts.size() != 0) {
+                if (favoriteProducts.size() != 0) {
                     mErrorMsg.setVisibility(View.GONE);
                     mProductArrayList.clear();
                     mProductArrayList.addAll(favoriteProducts);
@@ -147,7 +139,7 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
                 } else {
                     mProductArrayList.clear();
                     mRecyclerViewAdapter.notifyDataSetChanged();
-                    mErrorMsg.setText(R.string.msg_not_favorites);
+                    mErrorMsg.setText(R.string.msg_no_favorites);
                     mErrorMsg.setVisibility(View.VISIBLE);
                 }
         }
@@ -155,17 +147,14 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
 
     @Override
     public void onInsertComplete(int token, Object cookie, Uri uri) {
-
     }
 
     @Override
     public void onUpdateComplete(int token, Object cookie, int result) {
-
     }
 
     @Override
     public void onDeleteComplete(int token, Object cookie, int result) {
-
     }
 
     // ===========================================================
@@ -177,11 +166,11 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
     }
 
     private void findViews(View view) {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_favorite_products);
-        mErrorMsg = (TextView) view.findViewById(R.id.tv_favorite_products);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_fv_products);
+        mErrorMsg = (TextView) view.findViewById(R.id.tv_fv_products);
     }
 
-    private void init () {
+    private void init() {
         mPlAsyncQueryHandler = new PlAsyncQueryHandler(getActivity().getApplicationContext(), this);
 
         mRecyclerView.setHasFixedSize(true);
@@ -199,7 +188,6 @@ public class FavoriteProductsFragment extends BaseFragment implements View.OnCli
     }
 
     private void customizeActionBar() {
-
     }
 
     // ===========================================================

@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,13 +73,6 @@ public class ProductListActivity extends BaseActivity implements View.OnClickLis
         } else {
             mPlAsyncQueryHandler.getProducts();
         }
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        BusProvider.unregister(this);
     }
 
     @Override
@@ -94,6 +86,16 @@ public class ProductListActivity extends BaseActivity implements View.OnClickLis
         return true;
     }
 
+    // ===========================================================
+    // Click Listeners
+    // ===========================================================
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -105,16 +107,6 @@ public class ProductListActivity extends BaseActivity implements View.OnClickLis
     }
 
     // ===========================================================
-    // Click Listeners
-    // ===========================================================
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-        }
-    }
-
-    // ===========================================================
     // Other Listeners, methods for/from Interfaces
     // ===========================================================
 
@@ -122,7 +114,7 @@ public class ProductListActivity extends BaseActivity implements View.OnClickLis
     public void onEventReceived(ApiEvent<Object> apiEvent) {
         if (apiEvent.getEventType() == ApiEvent.EventType.PRODUCT_LIST_LOADED) {
             if (!apiEvent.isSuccess()) {
-                Toast.makeText(this, R.string.msg_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.msg_some_error, Toast.LENGTH_SHORT).show();
             }
             mPlAsyncQueryHandler.getProducts();
         }
@@ -164,7 +156,6 @@ public class ProductListActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onPageSelected(int position) {
-        Log.d(LOG_TAG, "onPageSelected - " + position);
         setActionBarTitle(String.valueOf(mFragmentAdapter.getPageTitle(position)));
         if (!mProductArrayList.get(position).isUser()) {
             loadProduct(mProductArrayList.get(position).getId());
@@ -173,7 +164,6 @@ public class ProductListActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        Log.d(LOG_TAG, "onPageScrollStateChanged - " + state);
     }
 
     // ===========================================================

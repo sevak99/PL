@@ -43,7 +43,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     // Fields
     // ===========================================================
 
-    private boolean useCamera = true;
+    private boolean useCamera;
     private EditText mEtProductTitle;
     private EditText mEtProductPrice;
     private EditText mEtProductDescription;
@@ -80,12 +80,11 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString(Constant.Bundle.TITLE, mEtProductTitle.getText().toString());
         savedInstanceState.putString(Constant.Bundle.PRICE, mEtProductPrice.getText().toString());
         savedInstanceState.putString(Constant.Bundle.DESCRIPTION, mEtProductDescription.getText().toString());
         savedInstanceState.putBoolean(Constant.Bundle.FAVORITE, mProduct.isFavorite());
-
-        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -108,11 +107,10 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.RequestCode.CAMERA) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                openCamera();
             } else {
                 useCamera = false;
             }
@@ -123,7 +121,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case Constant.RequestCode.CAMERA:
                     Bitmap photo = (Bitmap) data.getExtras().get("data");
@@ -152,22 +150,21 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
                 createProduct(
                         mEtProductTitle.getText().toString(),
                         Long.parseLong(mEtProductPrice.getText().toString()),
-                        mEtProductDescription.getText().toString()
+                        mEtProductDescription.getText().toString(),
+                        Constant.API.DEFULT_IMAGE
                 );
-
-
+                
                 AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                        .setMessage(R.string.msg_add_product)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        .setMessage(R.string.msg_dialog_add_product)
+                        .setPositiveButton(R.string.text_btn_dialog_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mPlAsyncQueryHandler.addProduct(mProduct);
                             }
                         })
-                        .setNegativeButton(R.string.cancel, null);
+                        .setNegativeButton(R.string.text_btn_dialog_cancel, null);
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
                 break;
 
             case R.id.iv_add_product_logo:
@@ -178,8 +175,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
                         requestPermissions(new String[]{Manifest.permission.CAMERA},
                                 Constant.RequestCode.CAMERA);
                     }
-                }
-                if(useCamera) {
+                } else if (useCamera) {
                     openCamera();
                 }
                 break;
@@ -195,7 +191,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
 
             case R.id.menu_product_favorite:
                 if (mProduct.isFavorite()) {
-                    mMenuFavorite.setIcon(R.drawable.ic_not_favorite);
+                    mMenuFavorite.setIcon(R.drawable.ic_unfavorite);
                     mProduct.setFavorite(false);
                 } else {
                     mMenuFavorite.setIcon(R.drawable.ic_favorite);
@@ -224,7 +220,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         AppUtil.sendNotification(
                 getApplicationContext(),
                 MainActivity.class,
-                "PL App",
+                getString(R.string.app_name),
                 getString(R.string.notif_add) + " " + mProduct.getName(),
                 mProduct.getName(),
                 Constant.NotifType.ADD
@@ -234,12 +230,10 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onUpdateComplete(int token, Object cookie, int result) {
-
     }
 
     @Override
     public void onDeleteComplete(int token, Object cookie, int result) {
-
     }
 
     // ===========================================================
@@ -253,7 +247,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
 
     private void findViews() {
         mIvProductImage = (ImageView) findViewById(R.id.iv_add_product_logo);
-        mEtProductTitle = (EditText) findViewById(R.id.et_add_product_title);
+        mEtProductTitle = (EditText) findViewById(R.id.edt_add_product_title);
         mEtProductPrice = (EditText) findViewById(R.id.et_add_product_price);
         mEtProductDescription = (EditText) findViewById(R.id.et_add_product_description);
         mBtnProductAdd = (Button) findViewById(R.id.btn_add_product_add);
@@ -264,8 +258,10 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     }
 
     private void init() {
+        useCamera = true;
+
         Glide.with(this)
-                .load(Constant.Image.DEFULT_IMAGE)
+                .load(Constant.API.DEFULT_IMAGE)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mIvProductImage);
 
@@ -273,24 +269,20 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
         mPlAsyncQueryHandler = new PlAsyncQueryHandler(getApplicationContext(), this);
     }
 
-    private void createProduct(String name, long price, String description) {
-
+    private void createProduct(String name, long price, String description, String imageUrl) {
         mProduct.setId(System.currentTimeMillis());
         mProduct.setName(name);
         mProduct.setPrice(price);
         mProduct.setUser(true);
         mProduct.setDescription(description);
-        mProduct.setImage(Constant.Image.DEFULT_IMAGE);
+        mProduct.setImage(imageUrl);
     }
-
 
     private void fillData(Bundle bundle) {
         mEtProductTitle.setText(bundle.getString(Constant.Bundle.TITLE));
         mEtProductPrice.setText(bundle.getString(Constant.Bundle.PRICE));
         mEtProductDescription.setText(bundle.getString(Constant.Bundle.DESCRIPTION));
-        if (bundle.getBoolean(Constant.Bundle.FAVORITE)) {
-            mProduct.setFavorite(true);
-        }
+        mProduct.setFavorite(bundle.getBoolean(Constant.Bundle.FAVORITE));
     }
 
     private void openCamera() {

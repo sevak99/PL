@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -90,12 +89,6 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
     // ===========================================================
     // Other Listeners, methods for/from Interfaces
     // ===========================================================
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_add_product, menu);
-        return true;
-    }
 
     // ===========================================================
     // Click Listeners

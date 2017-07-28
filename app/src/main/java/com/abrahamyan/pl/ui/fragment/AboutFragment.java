@@ -25,7 +25,6 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
     // ===========================================================
 
     private static final String LOG_TAG = AboutFragment.class.getSimpleName();
-    public static final String URL = "http://aca.am/";
 
     // ===========================================================
     // Fields
@@ -56,12 +55,6 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
     // ===========================================================
     // Methods for/from SuperClass
     // ===========================================================
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
 
     @Nullable
     @Override
@@ -120,7 +113,7 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
 
     private void loadUrl() {
         mSwipeRefreshLayout.setRefreshing(true);
-        mWv.loadUrl(URL);
+        mWv.loadUrl(Constant.API.URL_ACA);
     }
 
     public void getData() {
@@ -148,7 +141,7 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
     private class CustomWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request){
-            if (!view.getUrl().contains(URL)) {
+            if (!view.getUrl().contains(Constant.API.URL_ACA)) {
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(view.getUrl()));
                 startActivity(i);
                 return true;
@@ -158,7 +151,7 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if(url.contains(URL)) {
+            if(url.contains(Constant.API.URL_ACA)) {
                 return false;
             }
 
@@ -185,7 +178,4 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener,
             }
         }
     }
-
-
-
 }

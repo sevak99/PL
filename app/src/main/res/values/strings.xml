@@ -10,29 +10,40 @@
     <string name="msg_connection_error">Connection error</string>
     <string name="msg_navigation_drawer_open">Open navigation drawer</string>
     <string name="msg_navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="msg_not_favorites">No favorite products</string>
-    <string name="msg_error">Something went wrong, please try again</string>
+    <string name="msg_some_error">Something went wrong, please try again</string>
+    <string name="msg_no_favorites">No favorite products</string>
 
     <!--Navigation drawer menu items-->
     <string name="text_product_list">Product List</string>
     <string name="text_about">About</string>
     <string name="text_favorite_products">Favorites</string>
-    <string name="text_product_vp">Product wp</string>
+    <string name="text_product_vp">Product vp</string>
     <string name="text_logout">Logout</string>
 
     <!--Dialog-->
-    <string name="cancel">Cancel</string>
-    <string name="delete">Delete</string>
-    <string name="ok">Ok</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="msg_delete_product">Are you sure to delete this item?</string>
-    <string name="msg_add_product">Are you sure to add this item?</string>
+    <string name="text_btn_dialog_cancel">Cancel</string>
+    <string name="text_btn_dialog_delete">Delete</string>
+    <string name="text_btn_dialog_ok">OK</string>
+    <string name="text_btn_dialog_yes">Yes</string>
+    <string name="text_btn_dialog_no">No</string>
+    <string name="msg_dialog_delete_product">Are you sure to delete this item?</string>
+    <string name="msg_dialog_add_product">Are you sure to add this item?</string>
 
     <!--Toolbar titles-->
     <string name="text_add_product">Add Product</string>
     <string name="text_product">Product</string>
+
+    <!--Add Product screen strings-->
+    <string name="hint_edt_add_product_title">Title</string>
+    <string name="hint_edt_add_product_price">Price</string>
+    <string name="hint_edt_add_product_desc">Description</string>
+    <string name="text_btn_add_product_add">Add</string>
+
+
+    <!--Product screen strings-->
+    <string name="hint_edt_product_title">Title</string>
+    <string name="hint_edt_product_price">Price</string>
+    <string name="hint_edt_product_desc">Description</string>
 
     <!--Auth screen strings-->
     <string name="text_btn_auth_sign">Login</string>
@@ -45,13 +56,7 @@
     <string name="msg_edt_title_error">Title can not be empty</string>
     <string name="msg_edt_price_error">Price can not be empty</string>
 
-    <!--View strings-->
-    <string name="title">Title</string>
-    <string name="price">Price</string>
-    <string name="desc">Description</string>
-    <string name="add">Add</string>
-
-    <!--Notif strings-->
+    <!--Notification strings-->
     <string name="notif_add">Added</string>
     <string name="notif_update">Updated</string>
 
