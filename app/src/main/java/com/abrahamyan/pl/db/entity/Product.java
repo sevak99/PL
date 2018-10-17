@@ -164,4 +164,25 @@ public class Product implements Parcelable {
         dest.writeByte(this.favorite ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isUser ? (byte) 1 : (byte) 0);
     }
+
+    // ===========================================================
+    // Methods for/from SuperClass
+    // ===========================================================
+
+    @Override
+    public Product clone() throws CloneNotSupportedException {
+        return new Product(id, name, price, image, description, favorite, isUser);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Product product = (Product) obj;
+        if (product.getId() == id &&
+                product.getName().equals(name) &&
+                product.getImage().equals(image) &&
+                ((product.getDescription() == null && description == null) || product.getDescription().equals(description)) &&
+                product.getPrice() == price)
+            return true;
+        return false;
+    }
 }

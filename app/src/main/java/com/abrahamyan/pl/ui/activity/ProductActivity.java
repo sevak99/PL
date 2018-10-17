@@ -1,9 +1,14 @@
 package com.abrahamyan.pl.ui.activity;
 
+
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +33,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.common.eventbus.Subscribe;
 
 public class ProductActivity extends BaseActivity
-        implements PlAsyncQueryHandler.AsyncQueryListener {
+        implements PlAsyncQueryHandler.AsyncQueryListener, View.OnClickListener {
 
     // ===========================================================
     // Constants
@@ -40,12 +45,13 @@ public class ProductActivity extends BaseActivity
     // Fields
     // ===========================================================
 
+    private boolean isStillEditing;
     private TextView mTvProductTitle;
     private TextView mTvProductPrice;
     private TextView mTvProductDescription;
-    private EditText mEtProductTitle;
-    private EditText mEtProductPrice;
-    private EditText mEtProductDescription;
+    private EditText mEdtProductTitle;
+    private EditText mEdtProductPrice;
+    private EditText mEdtProductDescription;
     private ImageView mIvProductImage;
     private LinearLayout mLlProductView;
     private LinearLayout mLlProductEdit;
@@ -53,8 +59,8 @@ public class ProductActivity extends BaseActivity
     private MenuItem mMenuDone;
     private MenuItem mMenuFavorite;
     private Product mProduct;
+    private Product mOldProduct;
     private PlAsyncQueryHandler mPlAsyncQueryHandler;
-    private Bundle mBundle;
 
     // ===========================================================
     // Constructors
@@ -73,28 +79,30 @@ public class ProductActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         BusProvider.register(this);
         findViews();
-        getData();
-        init(savedInstanceState);
+        setListeners();
+        try {
+            getData(savedInstanceState);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        init();
         customizeActionBar();
-
-        if (!mProduct.isUser()) {
-            loadProduct();
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        if (mMenuDone.isVisible()) {
-            savedInstanceState.putString(Constant.Bundle.TITLE, mEtProductTitle.getText().toString());
-            savedInstanceState.putString(Constant.Bundle.PRICE, mEtProductPrice.getText().toString());
-            savedInstanceState.putString(Constant.Bundle.DESCRIPTION, mEtProductDescription.getText().toString());
-        }
     }
 
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_product;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle saveInstanceState) {
+        super.onSaveInstanceState(saveInstanceState);
+        if (isStillEditing) {
+            mProduct.setName(String.valueOf(mEdtProductTitle.getText()));
+            mProduct.setPrice(Long.parseLong(String.valueOf(mEdtProductPrice.getText())));
+            mProduct.setDescription(String.valueOf(mEdtProductDescription.getText()));
+            saveInstanceState.putParcelable(Constant.Extra.EXTRA_PRODUCT, mProduct);
+        }
     }
 
     @Override
@@ -107,9 +115,10 @@ public class ProductActivity extends BaseActivity
         if (mProduct.isUser()) {
             mMenuEdit.setVisible(true);
         }
-        if (mBundle != null && mBundle.getString(Constant.Bundle.TITLE) != null) {
+        if (isStillEditing) {
             mMenuDone.setVisible(true);
             mMenuEdit.setVisible(false);
+            mMenuFavorite.setVisible(false);
         }
         if (mProduct.isFavorite()) {
             mMenuFavorite.setIcon(R.drawable.ic_favorite);
@@ -117,9 +126,35 @@ public class ProductActivity extends BaseActivity
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case Constant.RequestCode.CAMERA_ACTIVITY:
+                    Uri photoUri = (Uri) data.getExtras().get(Constant.Extra.EXTRA_PHOTO_URI);
+                    mProduct.setImage(String.valueOf(photoUri));
+                    Glide.with(this)
+                            .load(photoUri)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mIvProductImage);
+                    break;
+            }
+        }
+    }
+
     // ===========================================================
     // Click Listeners
     // ===========================================================
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_product_image:
+                Intent intent = new Intent(this, CameraActivity.class);
+                startActivityForResult(intent, Constant.RequestCode.CAMERA_ACTIVITY);
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -129,24 +164,25 @@ public class ProductActivity extends BaseActivity
                 return true;
 
             case R.id.menu_product_edit:
-                mMenuDone.setVisible(true);
+                isStillEditing = true;
                 mMenuEdit.setVisible(false);
+                mMenuDone.setVisible(true);
+                mMenuFavorite.setVisible(false);
                 openEditLayout(mProduct);
                 return true;
 
             case R.id.menu_product_done:
-                if (mEtProductTitle.getText().length() == 0) {
+                if (mEdtProductTitle.getText().length() == 0) {
                     Toast.makeText(this, R.string.msg_edt_title_error, Toast.LENGTH_SHORT).show();
-                } else if (mEtProductPrice.getText().length() == 0) {
-                    Toast.makeText(this, R.string.msg_edt_price_error, Toast.LENGTH_SHORT).show();
                 } else {
-                    mMenuDone.setVisible(false);
+                    isStillEditing = false;
                     mMenuEdit.setVisible(true);
-
+                    mMenuDone.setVisible(false);
+                    mMenuFavorite.setVisible(true);
                     updateProduct(
-                            mEtProductTitle.getText().toString(),
-                            Long.parseLong(mEtProductPrice.getText().toString()),
-                            mEtProductDescription.getText().toString()
+                            String.valueOf(mEdtProductTitle.getText()),
+                            Long.parseLong(String.valueOf(mEdtProductPrice.getText())),
+                            String.valueOf(mEdtProductDescription.getText())
                     );
                     openViewLayout(mProduct);
                 }
@@ -161,7 +197,6 @@ public class ProductActivity extends BaseActivity
                     mProduct.setFavorite(true);
                 }
                 mPlAsyncQueryHandler.updateProduct(mProduct);
-
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -211,10 +246,6 @@ public class ProductActivity extends BaseActivity
     // Methods
     // ===========================================================
 
-    private void getData() {
-        mProduct = getIntent().getParcelableExtra(Constant.Extra.EXTRA_PRODUCT);
-    }
-
     private void findViews() {
         mIvProductImage = (ImageView) findViewById(R.id.iv_product_image);
         mLlProductView = (LinearLayout) findViewById(R.id.ll_product_not_editable);
@@ -222,16 +253,48 @@ public class ProductActivity extends BaseActivity
         mTvProductPrice = (TextView) findViewById(R.id.tv_product_price);
         mTvProductDescription = (TextView) findViewById(R.id.tv_product_description);
         mLlProductEdit = (LinearLayout) findViewById(R.id.ll_product_editable);
-        mEtProductTitle = (EditText) findViewById(R.id.edt_product_title);
-        mEtProductPrice = (EditText) findViewById(R.id.edt_product_price);
-        mEtProductDescription = (EditText) findViewById(R.id.edt_product_description);
+        mEdtProductTitle = (EditText) findViewById(R.id.edt_product_title);
+        mEdtProductPrice = (EditText) findViewById(R.id.edt_product_price);
+        mEdtProductDescription = (EditText) findViewById(R.id.edt_product_description);
     }
 
-    private void customizeActionBar() {
-        setActionBarTitle(getString(R.string.text_product));
+    private void setListeners() {
+        mEdtProductPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() >= 1 && s.charAt(0) == '0') {
+                    int i = 0;
+                    while ((s.length() >= i + 2) && (s.toString().charAt(i) == '0')) {
+                        i++;
+                    }
+                    mEdtProductPrice.removeTextChangedListener(this);
+                    mEdtProductPrice.setText(s.subSequence(i, s.length()));
+                    mEdtProductPrice.addTextChangedListener(this);
+                    if (count > 0) {
+                        mEdtProductPrice.setSelection(start + count - i);
+                    } else {
+                        mEdtProductPrice.setSelection(start);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    mEdtProductPrice.removeTextChangedListener(this);
+                    mEdtProductPrice.setText("0");
+                    mEdtProductPrice.addTextChangedListener(this);
+                    mEdtProductPrice.setSelection(1);
+                }
+            }
+        });
     }
 
-    private void init(Bundle bundle) {
+    private void init() {
         mPlAsyncQueryHandler = new PlAsyncQueryHandler(ProductActivity.this, this);
 
         Glide.with(this)
@@ -239,17 +302,27 @@ public class ProductActivity extends BaseActivity
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mIvProductImage);
 
-        mBundle = bundle;
-
-        if (mBundle != null && mBundle.getString(Constant.Bundle.TITLE) != null) {
-            Product product = new Product();
-            product.setName(mBundle.getString(Constant.Bundle.TITLE));
-            product.setDescription(mBundle.getString(Constant.Bundle.DESCRIPTION));
-            product.setPrice(mBundle.getInt(Constant.Bundle.PRICE));
-
-            openEditLayout(product);
+        if (isStillEditing) {
+            openEditLayout(mProduct);
         } else {
             openViewLayout(mProduct);
+        }
+    }
+
+    private void customizeActionBar() {
+        setActionBarTitle(getString(R.string.text_product));
+    }
+
+    private void getData(Bundle bundle) throws CloneNotSupportedException {
+        if (bundle != null && bundle.getParcelable(Constant.Extra.EXTRA_PRODUCT) != null) {
+            mProduct = bundle.getParcelable(Constant.Extra.EXTRA_PRODUCT);
+            isStillEditing = true;
+        } else {
+            mOldProduct = getIntent().getParcelableExtra(Constant.Extra.EXTRA_PRODUCT);
+            mProduct = mOldProduct.clone();
+            if (!mProduct.isUser()) {
+                loadProduct();
+            }
         }
     }
 
@@ -264,16 +337,18 @@ public class ProductActivity extends BaseActivity
     }
 
     private void updateProduct(String name, long price, String description) {
-        if(name.equals(mProduct.getName()) &&
-                price == mProduct.getPrice() &&
-                description.equals(mProduct.getDescription())) {
-            return;
-        }
         mProduct.setName(name);
         mProduct.setPrice(price);
         mProduct.setDescription(description);
 
-        mPlAsyncQueryHandler.updateProduct(mProduct);
+        if (!mProduct.equals(mOldProduct)) {
+            try {
+                mOldProduct = mProduct.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            mPlAsyncQueryHandler.updateProduct(mProduct);
+        }
     }
 
     private void openViewLayout(Product product) {
@@ -285,15 +360,17 @@ public class ProductActivity extends BaseActivity
         mTvProductTitle.setText(product.getName());
         mTvProductPrice.setText(String.valueOf(product.getPrice()));
         mTvProductDescription.setText(product.getDescription());
+        mIvProductImage.setOnClickListener(null);
     }
 
     private void openEditLayout(Product product) {
         mLlProductView.setVisibility(View.GONE);
         mLlProductEdit.setVisibility(View.VISIBLE);
 
-        mEtProductTitle.setText(product.getName());
-        mEtProductPrice.setText(String.valueOf(product.getPrice()));
-        mEtProductDescription.setText(product.getDescription());
+        mEdtProductTitle.setText(product.getName());
+        mEdtProductPrice.setText(String.valueOf(product.getPrice()));
+        mEdtProductDescription.setText(product.getDescription());
+        mIvProductImage.setOnClickListener(this);
     }
 
     // ===========================================================

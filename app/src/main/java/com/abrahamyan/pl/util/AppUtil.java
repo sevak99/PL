@@ -1,6 +1,7 @@
 package com.abrahamyan.pl.util;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.view.inputmethod.InputMethodManager;
@@ -55,7 +57,7 @@ public class AppUtil {
         PendingIntent notificationPendingIntent =
                 stackBuilder.getPendingIntent(type, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotifType.NOTIFICATION_CHANNEL_ID);
 
         builder.setSmallIcon(android.R.drawable.sym_action_chat)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.img_drawer_android))
@@ -70,6 +72,20 @@ public class AppUtil {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(Constant.NotifType.NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            assert mNotificationManager != null;
+            mNotificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        assert mNotificationManager != null;
         mNotificationManager.notify(type, builder.build());
     }
 }

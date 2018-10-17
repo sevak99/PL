@@ -19,11 +19,23 @@ public class BusProvider {
     // Fields
     // ===========================================================
 
+//    private static final EventBus BUS = new AsyncEventBus(new Executor() {
+//        private Handler handler;
+//        @Override
+//        public void execute(@NonNull Runnable command) {
+//            if (handler == null) {
+//                handler = new Handler(Looper.getMainLooper());
+//            }
+//            handler.post(command);
+//        }
+//    });
+
     private static final EventBus BUS = new AsyncEventBus(new Executor() {
         private Handler handler;
+
         @Override
         public void execute(@NonNull Runnable command) {
-            if (handler == null) {
+            if(handler == null) {
                 handler = new Handler(Looper.getMainLooper());
             }
             handler.post(command);

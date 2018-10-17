@@ -62,10 +62,10 @@ public class PlQueryHandler {
 
     public synchronized static void updateProduct(Context context, Product product) {
         context.getContentResolver().update(
-                UriBuilder.buildProductUri(product.getId()),
+                UriBuilder.buildProductUri(),
                 PlDataBase.composeValues(product, PlDataBase.ContentValuesType.PRODUCTS),
-                null,
-                null
+                PlDataBase.PRODUCT_ID + "=?",
+                new String[]{String.valueOf(product.getId())}
         );
     }
 
@@ -124,9 +124,9 @@ public class PlQueryHandler {
 
     public synchronized static void deleteProduct(Context context, Product product) {
         context.getContentResolver().delete(
-                UriBuilder.buildProductUri(product.getId()),
-                null,
-                null
+                UriBuilder.buildProductUri(),
+                PlDataBase.PRODUCT_ID + "=?",
+                new String[]{String.valueOf(product.getId())}
         );
     }
 

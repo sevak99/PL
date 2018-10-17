@@ -15,19 +15,24 @@ public class Constant {
         public static final String EXTRA_PRODUCT = "EXTRA_PRODUCT";
         public static final String EXTRA_NOTIF_DATA = "EXTRA_NOTIF_DATA";
         public static final String EXTRA_NOTIF_TYPE = "EXTRA_NOTIF_TYPE";
+        public static final String EXTRA_CAMERA_DATA = "data";
+        public static final String EXTRA_PHOTO_URI = "EXTRA_PHOTO_URI";
     }
 
     public class NotifType {
         public static final int ADD = 100;
         public static final int UPDATE = 101;
+        public static final String NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID";
     }
 
-    public class Bundle {
-        public static final String TITLE = "TITLE";
-        public static final String DESCRIPTION = "DESCRIPTION";
-        public static final String PRICE = "PRICE";
-        public static final String FAVORITE = "FAVORITE";
-    }
+//    public class Bundle {
+//        public static final String TITLE = "TITLE";
+//        public static final String DESCRIPTION = "DESCRIPTION";
+//        public static final String PRICE = "PRICE";
+//        public static final String FAVORITE = "FAVORITE";
+//        public static final String IMAGE = "IMAGE";
+//        public static final String MENU_STATE = "MENU_STATE";
+//    }
 
     public class Util {
         public static final String UTF_8 = "UTF-8";
@@ -53,6 +58,7 @@ public class Constant {
 
     public class RequestCode {
         public static final int ADD_PRODUCT_ACTIVITY = 100;
-        public static final int CAMERA = 101;
+        public static final int CAMERA_ACTIVITY = 101;
+        public static final int CAMERA = 102;
     }
 }

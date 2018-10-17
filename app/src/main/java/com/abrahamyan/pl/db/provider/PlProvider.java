@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -66,7 +65,7 @@ public class PlProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mDataBaseHelper = new PlDataBaseHelper(getContext());
-        return false;
+        return true;
     }
 
     @Override
@@ -94,7 +93,6 @@ public class PlProvider extends ContentProvider {
                 id = db.insertWithOnConflict(PlDataBase.PRODUCT_TABLE, null, values,
                         SQLiteDatabase.CONFLICT_IGNORE);
                 contentUri = ContentUris.withAppendedId(UriBuilder.buildProductUri(), id);
-//                contentUri = UriBuilder.buildProductUri(id);
                 break;
 
             default:
@@ -109,13 +107,10 @@ public class PlProvider extends ContentProvider {
                         String sortOrder) {
         Cursor cursor;
         SQLiteDatabase db = mDataBaseHelper.getWritableDatabase();
-        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
         switch (sUriMatcher.match(uri)) {
             case Code.ALL_PRODUCTS:
-//                cursor = db.query(PlDataBase.PRODUCT_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
-                queryBuilder.setTables(PlDataBase.PRODUCT_TABLE);
-                cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = db.query(PlDataBase.PRODUCT_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
             case Code.SINGLE_PRODUCT:
@@ -125,9 +120,7 @@ public class PlProvider extends ContentProvider {
                 } else {
                     selection = selection + " AND " + PlDataBase.PRODUCT_ID + "=" + id;
                 }
-//                cursor = db.query(PlDataBase.PRODUCT_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
-                queryBuilder.setTables(PlDataBase.PRODUCT_TABLE);
-                cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = db.query(PlDataBase.PRODUCT_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
             default:

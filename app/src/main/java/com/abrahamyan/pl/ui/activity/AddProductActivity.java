@@ -1,19 +1,14 @@
 package com.abrahamyan.pl.ui.activity;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,10 +38,9 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     // Fields
     // ===========================================================
 
-    private boolean useCamera;
-    private EditText mEtProductTitle;
-    private EditText mEtProductPrice;
-    private EditText mEtProductDescription;
+    private EditText mEdtProductTitle;
+    private EditText mEdtProductPrice;
+    private EditText mEdtProductDescription;
     private ImageView mIvProductImage;
     private Button mBtnProductAdd;
     private MenuItem mMenuFavorite;
@@ -69,22 +63,22 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         findViews();
-        init();
         setListeners();
-        customizeActionBar();
-
-        if (savedInstanceState != null) {
-            fillData(savedInstanceState);
+        if(savedInstanceState == null) {
+            init();
+        } else {
+            getData(savedInstanceState);
         }
+        customizeActionBar();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString(Constant.Bundle.TITLE, mEtProductTitle.getText().toString());
-        savedInstanceState.putString(Constant.Bundle.PRICE, mEtProductPrice.getText().toString());
-        savedInstanceState.putString(Constant.Bundle.DESCRIPTION, mEtProductDescription.getText().toString());
-        savedInstanceState.putBoolean(Constant.Bundle.FAVORITE, mProduct.isFavorite());
+    public void onSaveInstanceState(Bundle saveInstanceState) {
+        super.onSaveInstanceState(saveInstanceState);
+        mProduct.setName(String.valueOf(mEdtProductTitle.getText()));
+        mProduct.setPrice(Long.parseLong(String.valueOf(mEdtProductPrice.getText())));
+        mProduct.setDescription(String.valueOf(mEdtProductDescription.getText()));
+        saveInstanceState.putParcelable(Constant.Extra.EXTRA_PRODUCT, mProduct);
     }
 
     @Override
@@ -99,33 +93,22 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
 
         if (mProduct.isFavorite())
             mMenuFavorite.setIcon(R.drawable.ic_favorite);
-
         return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == Constant.RequestCode.CAMERA) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openCamera();
-            } else {
-                useCamera = false;
-            }
-        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case Constant.RequestCode.CAMERA:
-                    Bitmap photo = (Bitmap) data.getExtras().get("data");
-                    mIvProductImage.setImageBitmap(photo);
+                case Constant.RequestCode.CAMERA_ACTIVITY:
+                    Uri photoUri = (Uri) data.getExtras().get(Constant.Extra.EXTRA_PHOTO_URI);
+                    mProduct.setImage(String.valueOf(photoUri));
+                    Glide.with(this)
+                            .load(photoUri)
+                            .centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mIvProductImage);
                     break;
             }
         }
@@ -139,21 +122,17 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add_product_add:
-                if (mEtProductTitle.getText().length() == 0) {
+                if (mEdtProductTitle.getText().length() == 0) {
                     Toast.makeText(this, R.string.msg_edt_title_error, Toast.LENGTH_SHORT).show();
                     break;
-                } else if (mEtProductPrice.getText().length() == 0) {
+                } else if (mEdtProductPrice.getText().length() == 0) {
                     Toast.makeText(this, R.string.msg_edt_price_error, Toast.LENGTH_SHORT).show();
                     break;
                 }
+                mProduct.setName(String.valueOf(mEdtProductTitle.getText()));
+                mProduct.setPrice(Long.valueOf(String.valueOf(mEdtProductPrice.getText())));
+                mProduct.setDescription(String.valueOf(mEdtProductDescription.getText()));
 
-                createProduct(
-                        mEtProductTitle.getText().toString(),
-                        Long.parseLong(mEtProductPrice.getText().toString()),
-                        mEtProductDescription.getText().toString(),
-                        Constant.API.DEFULT_IMAGE
-                );
-                
                 AlertDialog.Builder builder = new AlertDialog.Builder(this)
                         .setMessage(R.string.msg_dialog_add_product)
                         .setPositiveButton(R.string.text_btn_dialog_ok, new DialogInterface.OnClickListener() {
@@ -168,16 +147,8 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
                 break;
 
             case R.id.iv_add_product_logo:
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA},
-                                Constant.RequestCode.CAMERA);
-                    }
-                } else if (useCamera) {
-                    openCamera();
-                }
+                Intent intent = new Intent(this, CameraActivity.class);
+                startActivityForResult(intent, Constant.RequestCode.CAMERA_ACTIVITY);
                 break;
         }
     }
@@ -197,7 +168,6 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
                     mMenuFavorite.setIcon(R.drawable.ic_favorite);
                     mProduct.setFavorite(true);
                 }
-
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -240,17 +210,64 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     // Methods
     // ===========================================================
 
+    private void findViews() {
+        mIvProductImage = (ImageView) findViewById(R.id.iv_add_product_logo);
+        mEdtProductTitle = (EditText) findViewById(R.id.edt_add_product_title);
+        mEdtProductPrice = (EditText) findViewById(R.id.edt_add_product_price);
+        mEdtProductDescription = (EditText) findViewById(R.id.edt_add_product_description);
+        mBtnProductAdd = (Button) findViewById(R.id.btn_add_product_add);
+    }
+
     private void setListeners() {
         mBtnProductAdd.setOnClickListener(this);
         mIvProductImage.setOnClickListener(this);
+        mEdtProductPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() >= 1 && s.charAt(0) == '0') {
+                    int i = 0;
+                    while ((s.length() >= i + 2) && (s.toString().charAt(i) == '0')) {
+                        i++;
+                    }
+                    mEdtProductPrice.removeTextChangedListener(this);
+                    mEdtProductPrice.setText(s.subSequence(i, s.length()));
+                    mEdtProductPrice.addTextChangedListener(this);
+                    if (count > 0) {
+                        mEdtProductPrice.setSelection(start + count - i);
+                    } else {
+                        mEdtProductPrice.setSelection(start);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    mEdtProductPrice.removeTextChangedListener(this);
+                    mEdtProductPrice.setText("0");
+                    mEdtProductPrice.addTextChangedListener(this);
+                    mEdtProductPrice.setSelection(1);
+                }
+            }
+        });
     }
 
-    private void findViews() {
-        mIvProductImage = (ImageView) findViewById(R.id.iv_add_product_logo);
-        mEtProductTitle = (EditText) findViewById(R.id.edt_add_product_title);
-        mEtProductPrice = (EditText) findViewById(R.id.et_add_product_price);
-        mEtProductDescription = (EditText) findViewById(R.id.et_add_product_description);
-        mBtnProductAdd = (Button) findViewById(R.id.btn_add_product_add);
+    private void getData(Bundle bundle) {
+        if (bundle.getParcelable(Constant.Extra.EXTRA_PRODUCT) != null) {
+            mProduct = bundle.getParcelable(Constant.Extra.EXTRA_PRODUCT);
+            mEdtProductTitle.setText(mProduct.getName());
+            mEdtProductPrice.setText(String.valueOf(mProduct.getPrice()));
+            mEdtProductDescription.setText(mProduct.getDescription());
+            Glide.with(this)
+                    .load(mProduct.getImage())
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(mIvProductImage);
+        }
     }
 
     private void customizeActionBar() {
@@ -258,36 +275,18 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
     }
 
     private void init() {
-        useCamera = true;
-
-        Glide.with(this)
-                .load(Constant.API.DEFULT_IMAGE)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(mIvProductImage);
-
         mProduct = new Product();
         mPlAsyncQueryHandler = new PlAsyncQueryHandler(getApplicationContext(), this);
-    }
 
-    private void createProduct(String name, long price, String description, String imageUrl) {
         mProduct.setId(System.currentTimeMillis());
-        mProduct.setName(name);
-        mProduct.setPrice(price);
         mProduct.setUser(true);
-        mProduct.setDescription(description);
-        mProduct.setImage(imageUrl);
-    }
+        mProduct.setImage(Constant.API.DEFULT_IMAGE);
 
-    private void fillData(Bundle bundle) {
-        mEtProductTitle.setText(bundle.getString(Constant.Bundle.TITLE));
-        mEtProductPrice.setText(bundle.getString(Constant.Bundle.PRICE));
-        mEtProductDescription.setText(bundle.getString(Constant.Bundle.DESCRIPTION));
-        mProduct.setFavorite(bundle.getBoolean(Constant.Bundle.FAVORITE));
-    }
-
-    private void openCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, Constant.RequestCode.CAMERA);
+        mEdtProductPrice.setText("0");
+        Glide.with(this)
+                .load(mProduct.getImage())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(mIvProductImage);
     }
 
     // ===========================================================

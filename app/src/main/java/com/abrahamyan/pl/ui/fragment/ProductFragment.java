@@ -76,8 +76,6 @@ public class ProductFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-        }
     }
 
     // ===========================================================
@@ -100,7 +98,7 @@ public class ProductFragment extends BaseFragment implements View.OnClickListene
             if (apiEvent.isSuccess()) {
                 Product product = (Product) apiEvent.getEventData();
                 if (mProduct.getId() == product.getId()) {
-                    updateDescription((Product) apiEvent.getEventData());
+                    updateDescription(((Product) apiEvent.getEventData()).getDescription());
                 }
             } else {
                 Toast.makeText(getActivity(), R.string.msg_some_error, Toast.LENGTH_SHORT).show();
@@ -138,8 +136,9 @@ public class ProductFragment extends BaseFragment implements View.OnClickListene
         mTvProductDesc.setText(product.getDescription());
     }
 
-    private void updateDescription(Product product) {
-        mTvProductDesc.setText(product.getDescription());
+    private void updateDescription(String desc) {
+        mProduct.setDescription(desc);
+        mTvProductDesc.setText(desc);
     }
 
     // ===========================================================
